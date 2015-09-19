@@ -1,5 +1,5 @@
 <?php
-// Clase de usuario
+// Clase Usuario
 
 class Usuario {
 	private $id;
