@@ -20,14 +20,22 @@ if(isset($_SESSION['usuario_registrado'])) {
 if(isset($usuario) && !empty($usuario)) {
 ?>
     <header>
-        <h1><?= $usuario->getNombre(); ?></h1>
-        <h2><?= $usuario->getMatricula(); ?></h2>
+        <nav class="primario">
+            <h1><?= $usuario->getNombre(); ?></h1>
+            <h2><?= $usuario->getMatricula(); ?></h2>
+            
+            <a href="#">Perfil</a>
+            <a href="#">Cerrar sesión</a>
+        </nav> <!-- /primario -->
         
-        <a href="#">Perfil</a>
-        <a href="#">Cerrar sesión</a>
+        <nav class="secundario">
+        </nav> <!-- /secundario -->
     </header>
     
     <div class="main">
+    	<?php
+		include_once('inc/lista-contenidos.php');
+		?>
         <?php var_dump($usuario->getTipo()); ?>
     </div> <!-- /main -->
 <?php

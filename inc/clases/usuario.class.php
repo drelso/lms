@@ -17,7 +17,7 @@ class Usuario {
 		$this->bd = new BD();
 		
 		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT * FROM usuarios WHERE id = " . $id);
+		$resultados = $this->bd->query("SELECT * FROM usuarios WHERE id = " . $this->bd->escapar($id));
 		if($resultados == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 		
 		foreach($resultados as $resultado) {
@@ -29,7 +29,7 @@ class Usuario {
 		} // foreach($resultados as $resultado) {
 		
 		// Consulta a tabla de tipo de usuario
-		$resultadosTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $id);
+		$resultadosTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->bd->escapar($id));
 		if($resultadosTipo == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 		
 		foreach($resultadosTipo as $resultadoTipo) {
@@ -49,7 +49,8 @@ class Usuario {
 			array_push($this->tipo, $tipo);
 		} // foreach($resultadosTipo as $resultadoTipo) {
 		
-	} // public __construct($id) {
+	} // function __construct($id) {
+	
 	
 	public function getID() { return $this->id; }
 	
@@ -57,7 +58,7 @@ class Usuario {
 	public function getNombre() { return $this->nombre; }
 	
 	public function setNombre($nombre) {
-		$this->bd->query('UPDATE usuarios SET nombre = ' . $nombre . ' WHERE id = ' . $this->id);
+		$this->bd->query('UPDATE usuarios SET nombre = ' . $this->bd->escapar($nombre) . ' WHERE id = ' . $this->id);
 		$this->nombre = $nombre;
 	} // public function setNombre($nombre) {
 	
@@ -65,7 +66,7 @@ class Usuario {
 	public function getCorreo() { return $this->correo; }
 	
 	public function setCorreo($correo) {
-		$this->bd->query('UPDATE usuarios SET correo = ' . $correo . ' WHERE id = ' . $this->id);
+		$this->bd->query('UPDATE usuarios SET correo = ' . $this->bd->escapar($correo) . ' WHERE id = ' . $this->id);
 		$this->correo = $correo;
 	} // public function setNombre($nombre) {
 		
@@ -73,7 +74,7 @@ class Usuario {
 	public function getCurriculum() { return $this->curriculum; }
 	
 	public function setCurriculum($curriculum) {
-		$this->bd->query('UPDATE usuarios SET curriculum = ' . $curriculum . ' WHERE id = ' . $this->id);
+		$this->bd->query('UPDATE usuarios SET curriculum = ' . $this->bd->escapar($curriculum) . ' WHERE id = ' . $this->id);
 		$this->curriculum = $curriculum;
 	} // public function setcurriculum($curriculum) {
 		
@@ -81,7 +82,7 @@ class Usuario {
 	public function getMatricula() { return $this->matricula; }
 	
 	public function setMatricula($matricula) {
-		$this->bd->query('UPDATE usuarios SET matricula = ' . $matricula . ' WHERE id = ' . $this->id);
+		$this->bd->query('UPDATE usuarios SET matricula = ' . $this->bd->escapar($matricula) . ' WHERE id = ' . $this->id);
 		$this->matricula = $matricula;
 	} // public function setmatricula($matricula) {
 		
@@ -99,19 +100,20 @@ class Usuario {
 	} // public function getContrasena() {
 	
 	public function setContrasena($contrasena) {
-		$this->bd->query('UPDATE usuarios SET contrasena = ' . $contrasena . ' WHERE id = ' . $this->id);
+		$hash = password_hash($contrasena, PASSWORD_BCRYPT);
+		$this->bd->query('UPDATE usuarios SET contrasena = ' . $hash . ' WHERE id = ' . $this->id);
 	} // public function setmatricula($matricula) {
 	
 	public function getTipo() { return $this->tipo; }
 	
 	public function agregarTipo($idTipo) {
-		$tieneTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $idTipo);
+		$tieneTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $this->bd->escapar($idTipo));
 		if($tieneTipo == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 		
 		if(empty($tieneTipo)) {
-			$resultado = $bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $idTipo . ")");
+			$resultado = $bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $this->bd->escapar($idTipo) . ")");
 			
-			$nombresTipo = $bd->query("SELECT nombre FROM tipos_usuarios WHERE id = " . $idTipo);
+			$nombresTipo = $bd->query("SELECT nombre FROM tipos_usuarios WHERE id = " . $this->bd->escapar($idTipo));
 			$nombreDeTipo;
 			
 			foreach($nombresTipo as $nombreTipo) {
@@ -129,17 +131,15 @@ class Usuario {
 	} // public function agregarTipo($tipo) {
 	
 	public function quitarTipo($idTipo) {
-		$resultado = $this->bd->query("DELETE FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $idTipo);
+		$resultado = $this->bd->query("DELETE FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $this->bd->escapar($idTipo));
 		if($resultado == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
-		
-		$resultado = $bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $idTipo . ")");
-		
+				
 		foreach($this->tipo as $key => $tipo) {
 			if($tipo['id'] == $idTipo) {
 				unset($this->tipo[$key]);
 				break;
 			} // if($tipo['id'] == $idTipo) {
-		} // foreach($resultados as $resultado) {
-	} // public function agregarTipo($tipo) {
+		} // foreach($this->tipo as $key => $tipo) {
+	} // public function quitarTipo($idTipo) {
 } // class Usuario {
 ?>
