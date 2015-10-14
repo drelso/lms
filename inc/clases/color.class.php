@@ -8,21 +8,26 @@ class Color {
 	private $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->id = intval($id);
+		
 		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT * FROM colores WHERE id = " . $id);
-		if($resultados == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
+		$resultados = $this->bd->query("SELECT * FROM colores WHERE id = " . $this->id);
 		
-		foreach($resultados as $resultado) {
-			$this->rgb		=	$resultado['rgb'];
-			$this->hex		=	$resultado['hex'];
-			break;
-		} // foreach($resultados as $resultado) {
+		if($resultados == false) {
+			
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 		
+		} else {
+		
+			foreach($resultados as $resultado) {
+				$this->rgb		=	$resultado['rgb'];
+				$this->hex		=	$resultado['hex'];
+				break;
+			} // foreach($resultados as $resultado) {
+		} // if($resultados == false) { ... else ...
 	} // function __construct($id) {
 	
 	
@@ -54,7 +59,7 @@ class Color {
 		} // foreach ($rgbArreglo as $valor) {
 		
 		if(!$rgbValidado) {
-			echo ' ERROR EN EL RGB ';
+			echo ' Error en el código RGB ';
 		} else {
 			$this->bd->query('UPDATE colores SET rgb = ' . $rgbValidado . ' WHERE id = ' . $this->id);
 			$this->rgb = $rgbValidado;
@@ -70,12 +75,12 @@ class Color {
 		if(substr($hex, 0, 1 ) != '#') { $hex = '#'.$hex; }
 		
 		if(preg_match('/#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?\b/', $hex) != 1) {
-			echo ' ERROR EN EL RGB ';
+			echo ' Error en el código Hex ';
 		} else {
 			$this->bd->query('UPDATE colores SET hex = ' . $hex . ' WHERE id = ' . $this->id);
 			$this->rgb = $rgbValidado;
 		}
-	} // public function setRGB($rgb) {
+	} // public function setHex($hex) {
 	
 	
 	public function hexToRGB($hex) {
@@ -85,15 +90,17 @@ class Color {
 		$hex = str_replace("#", "", $hex);
 		
 		if(strlen($hex) == 3) {
-		  $r = hexdec(substr($hex,0,1).substr($hex,0,1));
-		  $g = hexdec(substr($hex,1,1).substr($hex,1,1));
-		  $b = hexdec(substr($hex,2,1).substr($hex,2,1));
+			$r = hexdec(substr($hex,0,1).substr($hex,0,1));
+			$g = hexdec(substr($hex,1,1).substr($hex,1,1));
+			$b = hexdec(substr($hex,2,1).substr($hex,2,1));
 		} else {
-		  $r = hexdec(substr($hex,0,2));
-		  $g = hexdec(substr($hex,2,2));
-		  $b = hexdec(substr($hex,4,2));
-		}
+			$r = hexdec(substr($hex,0,2));
+			$g = hexdec(substr($hex,2,2));
+			$b = hexdec(substr($hex,4,2));
+		} // if(strlen($hex) == 3) { ... else ...
+		
 		$rgb = $r . ',' . $g . ',' . $b;
+		
 		return $rgb;
 	} // public function hexToRGB($hex) {
 	

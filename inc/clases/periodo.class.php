@@ -5,14 +5,15 @@ class Periodo {
 	private $id;
 	private $nombre;
 	private $descripcion;
+	private $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
-		$periodos = $this->bd->query("SELECT * FROM periodos WHERE id = " . $id);
+		$this->id = intval($id);
+		
+		$periodos = $this->bd->query("SELECT * FROM periodos WHERE id = " . $this->id);
 			
 		if($periodos == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
@@ -35,7 +36,7 @@ class Periodo {
 	
 	
 	public function setNombre($nombre) {
-		$this->bd->query('UPDATE periodos SET nombre = ' . $bd->escapar($nombre) . ' WHERE id = ' . $this->id);
+		$this->bd->query('UPDATE periodos SET nombre = ' . $this->bd->escapar($nombre) . ' WHERE id = ' . $this->id);
 		$this->nombre = $nombre;
 	} // public function setIdEstudiante($id) {
 	

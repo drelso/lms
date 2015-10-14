@@ -11,7 +11,7 @@ class Estudiante extends Usuario {
 		parent::__construct($id);
 		
 		// Consulta a tabla de grupos de usuario
-		$grupos = $this->bd->query("SELECT id_grupo FROM usuario_grupo WHERE id_usuario = " . $this->bd->escapar($id));
+		$grupos = $this->bd->query("SELECT id_grupo FROM usuario_grupo WHERE id_usuario = " . $this->id);
 	
 		if($grupos == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
@@ -53,14 +53,14 @@ class Estudiante extends Usuario {
 	} // public function agregarGrupo($grupo) {
 	
 	
-	public function quitarGrupo($idGrupo) {
+	public function quitarIdGrupo($idGrupo) {
 		$resultado = $this->bd->query("DELETE FROM usuario_grupo WHERE id_usuario = " . $this->id . " AND id_grupo = " . $this->bd->escapar($idGrupo));
 		if($resultado == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 				
 		$posicion = array_search($idGrupo, $this->idGrupos);
 		
 		if($posicion != false) { unset($this->idGrupos[$posicion]); }
-	} // public function quitarGrupo($idGrupo) {
+	} // public function quitarIdGrupo($idGrupo) {
 	
 	
 	public function getRegistros() { return $this->registros; }

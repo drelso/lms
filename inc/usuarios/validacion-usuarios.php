@@ -24,7 +24,7 @@ if(isset($_POST['envio'])) {
 					$_SESSION['usuario_registrado'] = $resultado['id'];
 				} else {
 					// La contraseña es inválida
-					session_destroy();
+					session_unset();
 				} // if (password_verify($_POST['contrasena'], $resultado['contrasena'])) {
 				
 			} // foreach($resultados as $resultado) {

@@ -10,13 +10,14 @@ class PaletaDeColores {
 	private $color5;
 	
 	function __construct($id) {
-		$this->id = $id;
 		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->id = intval($id);
+		
 		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT * FROM paleta_de_colores WHERE id = " . $this->bd->escapar($id));
+		$resultados = $this->bd->query("SELECT * FROM paleta_de_colores WHERE id = " . $this->id);
 		if($resultados == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 		} else {
@@ -32,6 +33,9 @@ class PaletaDeColores {
 			} // foreach($resultados as $resultado) {
 		} // if($resultados == false) { ... else ...
 	} // function __construct($id) {
+	
+	
+	public function getID() { return $this->id; }
 	
 	
 	public function getColor($numero) {

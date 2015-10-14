@@ -4,7 +4,7 @@
 require_once('usuario.class.php');
 
 class Profesor extends Usuario {
-	private $grupos = array();
+	private $idGrupos = array();
 	
 	function __construct($id) {
 		parent::__construct($id);
@@ -39,14 +39,14 @@ class Profesor extends Usuario {
 	} // public function agregarGrupo($grupo) {
 	
 	
-	public function quitarGrupo($idGrupo) {
+	public function quitarIdGrupo($idGrupo) {
 		$resultado = $this->bd->query("DELETE FROM usuario_grupo WHERE id_usuario = " . $this->id . " AND id_grupo = " . $this->bd->escapar($idGrupo));
 		if($resultado == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 				
 		$posicion = array_search($idGrupo, $this->idGrupos);
 		
 		if($posicion != false) { unset($this->idGrupos[$posicion]); }
-	} // public function quitarGrupo($idGrupo) {
+	} // public function quitarIdGrupo($idGrupo) {
 	
 } // class Profesor extends Usuario {
 ?>

@@ -7,13 +7,13 @@ class Tema {
 	private $bd;
 	
 	function __construct($idMateria) {
-		$this->idMateria = $idMateria;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->idMateria = intval($idMateria);
+		
 		// Consulta a tabla de tema
-		$resultados = $this->bd->query("SELECT * FROM tema WHERE id_materia = " . $this->bd->escapar($idMateria));
+		$resultados = $this->bd->query("SELECT * FROM tema WHERE id_materia = " . $this->idMateria);
 		
 		if( $resultados == false ) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();

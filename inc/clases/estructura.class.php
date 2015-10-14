@@ -12,13 +12,13 @@ class Estructura {
 	private $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->id = intval($id);
+		
 		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT * FROM estructuras WHERE id = " . $this->bd->escapar($id));
+		$resultados = $this->bd->query("SELECT * FROM estructuras WHERE id = " . $this->id);
 		
 		if($resultados == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
@@ -65,16 +65,19 @@ class Estructura {
 	public function setHTML($numero,$idHTML) {
 		$numeroEntero = intval($numero);
 		
-		if(intval())
-		$this->bd->query('UPDATE estructuras SET id_html_' . $numero . ' = ' . $this->bd->escapar($idHTML) . ' WHERE id = ' . $this->id);
-		
-		switch(intval($numero)) {
-			case 1: $this->html_1	=	new HTML($idHTML); break;
-			case 1: $this->html_2	=	new HTML($idHTML); break;
-			case 1: $this->html_3	=	new HTML($idHTML); break;
-			case 1: $this->html_4	=	new HTML($idHTML); break;
-			case 1: $this->html_5	=	new HTML($idHTML); break;
-			default: return 'Error: HTML inexistente en esta estructura';
-		} // switch(intval($numero)) {
-	} // public function setEstilos($estilos) {
+		if($numeroEntero > 0 && $numeroEntero < 6) {
+			$this->bd->query('UPDATE estructuras SET id_html_' . $numeroEntero . ' = ' . $this->bd->escapar($idHTML) . ' WHERE id = ' . $this->id);
+			
+			switch(intval($numero)) {
+				case 1: $this->html_1	=	new HTML($idHTML); break;
+				case 1: $this->html_2	=	new HTML($idHTML); break;
+				case 1: $this->html_3	=	new HTML($idHTML); break;
+				case 1: $this->html_4	=	new HTML($idHTML); break;
+				case 1: $this->html_5	=	new HTML($idHTML); break;
+				default: return 'Error: HTML inexistente en esta estructura';
+			} // switch(intval($numero)) {
+		} else {
+			echo 'Error: HTML inexistente en esta estructura';
+		} // if($numeroEntero > 0 && $numeroEntero < 6) {
+	} // public function setHTML($numero,$idHTML) {
 } // class Estructura {

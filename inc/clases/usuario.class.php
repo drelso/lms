@@ -2,37 +2,39 @@
 // Clase Usuario
 
 class Usuario {
-	private $id;
-	private $nombre;
-	private $correo;
-	private $curriculum;
-	private $matricula;
-	private $tipo = array();
-	private $bd;
+	protected $id;
+	protected $nombre;
+	protected $correo;
+	protected $curriculum;
+	protected $matricula;
+	protected $tipo = array();
+	protected $nivelDeEstudios;
+	protected $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->id = intval($id);
+		
 		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT * FROM usuarios WHERE id = " . $this->bd->escapar($id));
+		$resultados = $this->bd->query("SELECT * FROM usuarios WHERE id = " . $this->id);
 		
 		if($resultados == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 		} else {
 		
 			foreach($resultados as $resultado) {
-				$this->nombre		=	$resultado['nombre'];
-				$this->correo		=	$resultado['correo'];
-				$this->curriculum	=	$resultado['curriculum'];
-				$this->matricula	=	$resultado['matricula'];
+				$this->nombre				=	$resultado['nombre'];
+				$this->correo				=	$resultado['correo'];
+				$this->curriculum			=	$resultado['curriculum'];
+				$this->matricula			=	$resultado['matricula'];
+				$this->nivelDeEstudios		=	$resultado['nivel_estudios'];
 				break;
 			} // foreach($resultados as $resultado) {
 			
 			// Consulta a tabla de tipo de usuario
-			$resultadosTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->bd->escapar($id));
+			$resultadosTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->id);
 			if($resultadosTipo == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 			
 			foreach($resultadosTipo as $resultadoTipo) {
@@ -94,6 +96,15 @@ class Usuario {
 	} // public function setmatricula($matricula) {
 		
 	
+	public function getNivelDeEstudios() { return $this->nivelDeEstudios; }
+	
+	
+	public function setNivelDeEstudios($nivelDeEstudios) {
+		$this->bd->query('UPDATE usuarios SET nivel_estudios = ' . $this->bd->escapar($nivelDeEstudios) . ' WHERE id = ' . $this->id);
+		$this->nivelDeEstudios = $nivelDeEstudios;
+	} // public function setNivelDeEstudios($nivelDeEstudios) {
+		
+	
 	public function getContrasena() {
 		$resultados = $this->bd->query("SELECT contrasena FROM usuarios WHERE id = " . $this->id);
 		$contrasena = '';
@@ -115,28 +126,39 @@ class Usuario {
 	public function getTipo() { return $this->tipo; }
 	
 	
-	public function agregarTipo($idTipo) {
+	public function agregarTipo( $idTipo ) {
 		$tieneTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $this->bd->escapar($idTipo));
-		if($tieneTipo == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 		
-		if(empty($tieneTipo)) {
-			$resultado = $this->bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $this->bd->escapar($idTipo) . ")");
+		if( $tieneTipo == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+		} else {
+		
+			if( $tieneTipo->num_rows == 0 ) {
+				
+				$resultado = $this->bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $this->bd->escapar( $idTipo ) . ")");
+				
+				if( $resultado == false ) {
+					echo 'Hubo un error con la base de datos:' . $this->bd->error();
+				} else {
+					$nombresTipo = $this->bd->query("SELECT nombre FROM tipos_usuarios WHERE id = " . $this->bd->escapar($idTipo));
+					$nombreDeTipo;
+					
+					foreach( $nombresTipo as $nombreTipo ) {
+						$nombreDeTipo = $nombreTipo['nombre'];
+						break;
+					} // foreach($resultados as $resultado) {
+					
+					$tipo = array(
+						'id'			=>	$idTipo,
+						'nombre'		=>	$nombreDeTipo
+					);
+					
+					array_push($this->tipo, $tipo);
+				} // if( $resultado == false ) { ... else ...
+				
+			} // if(empty($tieneTipo)) {
 			
-			$nombresTipo = $this->bd->query("SELECT nombre FROM tipos_usuarios WHERE id = " . $this->bd->escapar($idTipo));
-			$nombreDeTipo;
-			
-			foreach($nombresTipo as $nombreTipo) {
-				$nombreDeTipo = $nombreTipo['nombre'];
-				break;
-			} // foreach($resultados as $resultado) {
-			
-			$tipo = array(
-				'id'			=>	$idTipo,
-				'nombre'		=>	$nombreDeTipo
-			);
-			
-			array_push($this->tipo, $tipo);
-		} // if(empty($resultadosTipo)) {
+		} // if($tieneTipo == false) { ... else ...
 	} // public function agregarTipo($tipo) {
 	
 	

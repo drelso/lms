@@ -9,11 +9,11 @@ class Registro {
 	private $bd;
 	
 	function __construct($idUsuario,$idGrupo,$completado = NULL,$calificacion = NULL) {
-		$this->idUsuario		=	$idUsuario;
-		$this->idGrupo			=	$idGrupo;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
+		
+		$this->idUsuario	=	intval($idUsuario);
+		$this->idGrupo		=	intval($idGrupo);
 		
 		// Si estan definidos los datos
 		if($completado !== NULL && $calificacion !== NULL) {
@@ -21,7 +21,7 @@ class Registro {
 			$this->calificacion = $calficacion;
 		} else {
 			// Consulta a tabla de registros
-			$registros = $this->bd->query("SELECT * FROM registros WHERE id_usuario = " . $idUsuario . " AND id_grupo = " . $idGrupo);
+			$registros = $this->bd->query("SELECT * FROM registros WHERE id_usuario = " . $this->idUsuario . " AND id_grupo = " . $this->idGrupo);
 			
 			if($registros == false) {
 				echo 'Hubo un error con la base de datos:' . $this->bd->error();

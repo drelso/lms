@@ -8,20 +8,27 @@ class HTML {
 	private $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
-		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT * FROM html WHERE id = " . $this->bd->escapar($id));
-		if($resultados == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
+		$this->id = intval($id);
 		
-		foreach($resultados as $resultado) {
-			$this->idTipoDeContenido	=	$resultado['id_tipo_contenido'];
-			$this->contenidoHTML		=	$resultado['html'];
-			break;
-		} // foreach($resultados as $resultado) {
+		// Consulta a tabla de usuarios
+		$resultados = $this->bd->query("SELECT * FROM html WHERE id = " . $this->id);
+		
+		if($resultados == false) {
+			
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			
+		} else {
+		
+			foreach($resultados as $resultado) {
+				$this->idTipoDeContenido	=	$resultado['id_tipo_contenido'];
+				$this->contenidoHTML		=	$resultado['html'];
+				break;
+			} // foreach($resultados as $resultado) {
+			
+		} // if($resultados == false) {
 	} // function __construct($id) {
 	
 	

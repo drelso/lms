@@ -7,13 +7,13 @@ class TipoDeContenido {
 	private $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->id = intval($id);
+		
 		// Consulta a tabla de usuarios
-		$resultados = $this->bd->query("SELECT nombre FROM tipo_contenido WHERE id = " . $this->bd->escapar($id));
+		$resultados = $this->bd->query("SELECT nombre FROM tipo_contenido WHERE id = " . $this->id);
 		
 		if($resultados == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();

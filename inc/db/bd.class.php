@@ -4,6 +4,7 @@ class BD {
 	// Conexión a la base de datos
 	protected static $conexion;
 	
+	
 	// Conectar a base de datos
 	// @return Error de MySQL / conexión a base de datos
 	//
@@ -35,6 +36,7 @@ class BD {
 		return self::$conexion;
 	} // public conectar() {
 	
+	
 	// Query a la base de datos
 	// @param $query La cadena del query
 	// @return mixto El resultado de mysqli::query()
@@ -47,12 +49,14 @@ class BD {
 		return $resultado;
 	} // public function bd_query() {
 	
+	
 	// Último error de la base de datos
 	// @return string Mensaje de error de la base de datos
 	public function error() {
         $conexion = $this->conectar();
         return $conexion->error;
     } // public function error() {
+	
 	
 	// Escapa los valores de las variables para usar en un query
 	// @param string $valor Valor a escapar
@@ -63,6 +67,14 @@ class BD {
 		return ("'" . $conexion->real_escape_string($valor) . "'");
     } // public function escapar($valor) {
 	
+	
+	// Regresa el valor del campo AUTO_INCREMENT actualizado
+	// por la última consulta. Devuelve cero si no hubo una
+	// consulta previa o si la consulta no actualiza este valor
+	public function idInsertado() {
+		$conexion = $this->conectar();
+		return $conexion->insert_id;
+	} // public function idInsertado() {
 } // class conexionDB {
 
 

@@ -8,17 +8,17 @@ class Materia {
 	private $bd;
 	
 	function __construct($id) {
-		$this->id = $this->bd->escapar($id);
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
+		
+		$this->id = intval($id);
 		
 		require_once('tema.class.php');
 		
 		$this->tema = new Tema($this->id);
 		
 		// Consulta a tabla de materia
-		$resultados = $this->bd->query("SELECT nombre FROM tipo_contenido WHERE id = " . $this->$id);
+		$resultados = $this->bd->query("SELECT nombre FROM tipo_contenido WHERE id = " . $this->id);
 		
 		if($resultados == false) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();

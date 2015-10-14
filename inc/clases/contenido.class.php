@@ -10,17 +10,20 @@ class Contenido {
 	private $bd;
 	
 	function __construct($id) {
-		$this->id = $id;
-		
 		require_once('inc/db/bd.class.php');
 		$this->bd = new BD();
 		
+		$this->id = intval($id);
+		
 		// Consulta a tabla de contenidos
-		$resultados = $this->bd->query("SELECT nombre FROM contenidos WHERE id = " . $this->bd->escapar($id));
+		$resultados = $this->bd->query("SELECT nombre FROM contenidos WHERE id = " . $this->id);
 		
 		if($resultados == false) {
+			
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			
 		} else {
+			
 			require_once('tiposcontenidos.class.php');
 			
 			foreach($resultados as $resultado) {
@@ -30,6 +33,7 @@ class Contenido {
 				$this->tipoDeContenido		=	new TipoDeContenido($resultado['tipoDeContenido']);
 				break;
 			} // foreach($resultados as $resultado) {
+			
 		} // if($resultados == false) { ... else ...
 	} // function __construct($id) {
 	

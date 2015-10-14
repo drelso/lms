@@ -10,17 +10,21 @@ class Evaluacion extends Contenido {
 		parent::__construct($id);
 		
 		// Consulta a tabla de evaluaciones
-		$resultados = $this->bd->query("SELECT * FROM evaluaciones WHERE id = " . $this->bd->escapar($id));
+		$resultados = $this->bd->query("SELECT * FROM evaluaciones WHERE id = " . $this->id);
 		
 		if($resultados == false) {
+			
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			
 		} else {
+			
 			foreach($resultados as $resultado) {
 				$pregunta		=	$resultado['pregunta'];
 				$respuesta		=	$resultado['respuesta'];
 				
 				array_push($this->preguntasYRespuestas, array($pregunta,$respuesta));
 			} // foreach($resultados as $resultado) {
+			
 		} // if($resultados == false) { ... else ...
 	} // function __construct($id) {
 	
