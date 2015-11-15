@@ -46,7 +46,7 @@ class Administrador extends Usuario {
 				
 				if( $usuarioNuevo == false ) {
 					echo 'Hubo un error con la base de datos:' . $this->bd->error();
-				} elseif( !empty( $usuarioNuevo ) ) {
+				} elseif( $usuarioNuevo->num_rows > 0 ) {
 					require_once('usuario.class.php');
 					
 					foreach( $usuarioNuevo as $usuario ) {
@@ -78,8 +78,7 @@ class Administrador extends Usuario {
 			
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 			
-		} elseif( !empty( $resultados ) ) {
-			
+		} elseif( $resultados->num_rows > 0 ) {
 			require_once('grupo.class.php');
 			
 			foreach( $resultados as $resultado ) {
@@ -89,7 +88,9 @@ class Administrador extends Usuario {
 			
 		} else {
 			
-			$this->bd->query("INSERT INTO grupos (id_materia,id_profesor,id_periodo) VALUES (" . $this->bd->escapar($idMateria) . "," . $this->bd->escapar($idProfesor) . "," . $this->bd->escapar($idPeriodo) . ")");
+			$insercion = $this->bd->query("INSERT INTO grupos (id_materia,id_profesor,id_periodo) VALUES (" . $this->bd->escapar($idMateria) . "," . $this->bd->escapar($idProfesor) . "," . $this->bd->escapar($idPeriodo) . ")");
+			
+			if( $insercion == false ) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 			
 			$grupos = $this->bd->query("SELECT * FROM grupos WHERE id_materia = " . $this->bd->escapar($idMateria) . " AND id_profesor = " . $this->bd->escapar($idProfesor) . " AND id_periodo = " . $this->bd->escapar($idPeriodo));
 			
@@ -151,7 +152,7 @@ class Administrador extends Usuario {
 			
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 			
-		} elseif( empty( $resultados ) ) {
+		} elseif( $resultados->num_rows == 0 ) {
 			
 			$this->bd->query("INSERT INTO periodos (nombre, descripcion) VALUES (" . $this->bd->escapar($nombre) . ", " . $this->bd->escapar($descripcion) . ")");
 			

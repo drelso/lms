@@ -25,11 +25,11 @@ $('#agregar-usuario').submit(function(e) {
 		
 		if( nombre.length > 255 ) { mensajeError = 'El nombre debe contener menos de 255 caracteres'; }
 		
-		$('#error-nombre-agregar').html( mensajeError );
+		$(this).find('.error-nombre').html( mensajeError );
 		
 		error = true;
 	} else {
-		$('#error-nombre-agregar').html('');
+		$(this).find('.error-nombre').html('');
 	} // if( nombre.length < 1 || nombre.length > 255 ) { ... else ...
 	
 	
@@ -40,28 +40,28 @@ $('#agregar-usuario').submit(function(e) {
 		
 		if( correo.length > 255 ) { mensajeError = 'El correo debe contener menos de 255 caracteres'; }
 		
-		$('#error-correo-agregar').html( mensajeError );
+		$(this).find('.error-correo').html( mensajeError );
 		
 		error = true;
 	} else if( !patron.test( correo ) ) {
-		$('#error-correo-agregar').html( 'Por favor ingrese un correo electrónico válido' );
+		$(this).find('.error-correo').html( 'Por favor ingrese un correo electrónico válido' );
 		
 		error = true;
 	} else {
-		$('#error-correo-agregar').html('');
+		$(this).find('.error-correo').html('');
 	} // if( correo.length < 1 || correo.length > 255 ) { ... else if ... else ...
 	
 	
 	if( contrasena.length < 8 || contrasena.length > 255 ) {
 		mensajeError = 'La contraseña debe contener al menos 8 caracteres';
 		
-		$('#error-contrasena-agregar').html(mensajeError);
+		$(this).find('.error-contrasena').html(mensajeError);
 	} else if( contrasena !== confirmarContrasena ) {
 		mensajeError = 'Las contraseñas no coinciden';
 		
-		$('#error-contrasena-agregar').html(mensajeError);
+		$(this).find('.error-contrasena').html(mensajeError);
 	} else {
-		$('#error-contrasena-agregar').html('');
+		$(this).find('.error-contrasena').html('');
 	} // if( contrasena.length < 8 || contrasena.length > 255 ) { ... else if ... else ...
 	
 	
@@ -76,8 +76,184 @@ $('#agregar-usuario').submit(function(e) {
 	
 	if( tipoVacio ) {
 		error = true;
-		$('#error-tipo-agregar').html('Por favor seleccione al menos un tipo para el usuario');
-	} else { $('#error-tipo-agregar').html(''); }
+		$(this).find('.error-tipo').html('Por favor seleccione al menos un tipo para el usuario');
+	} else { $(this).find('.error-tipo').html(''); }
 	
 	if( error ) { e.preventDefault(); }
 }); // $('#agregar-usuario').submit(function(e) {
+
+
+$('#agregar-grupo').submit(function(e) {
+    "use strict";
+	
+	var error = false;
+	
+	var profesor		=	$(this).find('select[name="profesor"]').val();
+	var materia		=	$(this).find('select[name="materia"]').val();
+	var periodo		=	$(this).find('select[name="periodo"]').val();
+	
+	var mensajeError = '';
+	
+	if( profesor == '0' ) {
+		mensajeError = 'Por favor elija un profesor para el grupo';
+		
+		$(this).find('.error-profesor').html(mensajeError);
+		error = true;
+	} else {
+		$(this).find('.error-profesor').html('');
+	} // if( profesor == null ) { ... else ...
+	
+	if( materia == '0' ) {
+		mensajeError = 'Por favor elija una materia para el grupo';
+		
+		$(this).find('.error-materia').html(mensajeError);
+		error = true;
+	} else {
+		$(this).find('.error-materia').html('');
+	} // if( profesor == null ) { ... else ...
+	
+	if( periodo == '0' ) {
+		mensajeError = 'Por favor elija un periodo para el grupo';
+		
+		$(this).find('.error-periodo').html(mensajeError);
+		error = true;
+	} else {
+		$(this).find('.error-periodo').html('');
+	} // if( profesor == null ) { ... else ...
+	
+	if( error ) { e.preventDefault(); }
+	
+}); // $('#agregar-grupo').submit(function(e) {
+
+
+$('#agregar-periodo').submit(function(e) {
+	"use strict";
+	
+	var error = false;
+	
+	var nombre			=	$(this).children('input[name="nombre"]').val();
+	var descripcion		=	$(this).children('input[name="descripcion"]').val();
+	
+	var mensajeError = '';
+	
+	if( nombre == '' ) {
+		mensajeError = 'Por favor ingrese el nombre del periodo';
+		
+		$(this).find('.error-nombre').html(mensajeError);
+		error = true;
+	} else if( nombre.length > 255 ) {
+		mensajeError = 'El nombre debe contener menos de 255 caracteres';
+		
+		$(this).find('.error-nombre').html(mensajeError);
+		error = true;
+	} else {
+		$(this).find('.error-nombre').html('');
+	} // if( nombre == null ) { ... else if ... else ...
+	
+	if( descripcion == '' ) {
+		mensajeError = 'Por favor ingrese la descripción del periodo';
+		
+		$(this).find('.error-descripcion').html(mensajeError);
+		error = true;
+	} else if( descripcion.length > 255 ) {
+		mensajeError = 'La descripción debe contener menos de 255 caracteres';
+		
+		$(this).find('.error-nombre').html(mensajeError);
+		error = true;
+	} else {
+		$(this).find('.error-descripcion').html('');
+	} // if( descripcion == null ) { ... else if ... else ...
+	
+	if( error ) { e.preventDefault(); }
+}); // $('#agregar-periodo').submit(function(e) {
+
+var error = false;
+var agregarMateria = $('#agregar-materia');
+
+$('#agregar-materia input[type="submit"]').click( function( e ) {
+	"use strict";
+	
+	
+	e.preventDefault();
+	
+	error = false;
+	
+	var clave		=	agregarMateria.find('input[name="clave"]').val();
+	var nombre		=	agregarMateria.find('input[name="nombre"]').val();
+	
+	var mensajeError = '';
+	
+	
+	if( clave == '' ) {
+		mensajeError = 'Por favor ingrese la clave de la materia';
+		
+		agregarMateria.find('.error-clave').html(mensajeError);
+		error = true;
+	} else if( clave.length > 10 ) {
+		mensajeError = 'La clave debe contener 10 caracteres o menos';
+		
+		agregarMateria.find('.error-clave').html(mensajeError);
+		error = true;
+	} else {
+		agregarMateria.find('.error-clave').html('');
+	} // if( clave == '' ) { ... else if ... else ...
+	
+	
+	if( nombre == '' ) {
+		mensajeError = 'Por favor ingrese el nombre de la materia';
+		
+		agregarMateria.find('.error-nombre').html(mensajeError);
+		error = true;
+	} else if( nombre.length > 255 ) {
+		mensajeError = 'El nombre debe contener menos de 255 caracteres';
+		
+		agregarMateria.find('.error-nombre').html(mensajeError);
+		error = true;
+	} else {
+		agregarMateria.find('.error-nombre').html('');
+	} // if( nombre == '' ) { ... else if ... else ...
+	
+	
+	if( !error ) {
+		
+		$.post( "inc/func/existe-clave.php", { clave: clave } )
+		.done(function( datos ) {
+			
+			var resultado = parseInt( datos );
+			var mensajeError = '';
+			
+			console.log(e);
+			
+			if( resultado == 1 ) {
+				
+				mensajeError = 'La clave ingresada ya existe';
+				
+				agregarMateria.find('.error-clave').html(mensajeError);
+				error = true;
+				
+			} else if( resultado != 0 ) {
+				
+				mensajeError = 'Error con la base de datos: ' + datos;
+				
+				agregarMateria.find('.error-clave').html(mensajeError);
+				error = true;
+				
+			} // if( resultado == 1 ) {
+			
+			//if( error ) { e.preventDefault(); }
+			
+			if( !error ) { agregarMateria.submit(); }
+			
+		})
+		.fail( function(xhr, textStatus, errorThrown ) {
+			mensajeError = xhr.responseText;
+			agregarMateria.find('.error-clave').html(mensajeError);
+		});
+	
+	} // if( !error ) {
+	
+	
+	// e.preventDefault();
+	 
+}); // $('#agregar-materia').submit(function(e) {
+

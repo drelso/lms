@@ -11,8 +11,8 @@ class Usuario {
 	protected $nivelDeEstudios;
 	protected $bd;
 	
-	function __construct($id) {
-		require_once('inc/db/bd.class.php');
+	function __construct( $id ) {
+		require_once( __DIR__ . '/../db/bd.class.php' );
 		$this->bd = new BD();
 		
 		$this->id = intval($id);
@@ -20,11 +20,11 @@ class Usuario {
 		// Consulta a tabla de usuarios
 		$resultados = $this->bd->query("SELECT * FROM usuarios WHERE id = " . $this->id);
 		
-		if($resultados == false) {
+		if( $resultados == false ) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 		} else {
 		
-			foreach($resultados as $resultado) {
+			foreach( $resultados as $resultado ) {
 				$this->nombre				=	$resultado['nombre'];
 				$this->correo				=	$resultado['correo'];
 				$this->curriculum			=	$resultado['curriculum'];
@@ -35,24 +35,29 @@ class Usuario {
 			
 			// Consulta a tabla de tipo de usuario
 			$resultadosTipo = $this->bd->query("SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->id);
-			if($resultadosTipo == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 			
-			foreach($resultadosTipo as $resultadoTipo) {
-				$nombresTipo = $this->bd->query("SELECT * FROM tipos_usuarios WHERE id = " . $resultadoTipo['id_tipo']);
-				$nombreDeTipo;
+			if( $resultadosTipo == false ) {
+				echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			} else {
+			
+				foreach( $resultadosTipo as $resultadoTipo ) {
+					$nombresTipo = $this->bd->query("SELECT * FROM tipos_usuarios WHERE id = " . $resultadoTipo['id_tipo']);
+					$nombreDeTipo;
+					
+					foreach( $nombresTipo as $nombreTipo ) {
+						$nombreDeTipo = $nombreTipo['nombre'];
+						break;
+					} // foreach($resultados as $resultado) {
+					
+					$tipo = array(
+						'id'			=>	$resultadoTipo['id_tipo'],
+						'nombre'		=>	$nombreDeTipo
+					);
+					
+					array_push( $this->tipo, $tipo );
+				} // foreach($resultadosTipo as $resultadoTipo) {
 				
-				foreach($nombresTipo as $nombreTipo) {
-					$nombreDeTipo = $nombreTipo['nombre'];
-					break;
-				} // foreach($resultados as $resultado) {
-				
-				$tipo = array(
-					'id'			=>	$resultadoTipo['id_tipo'],
-					'nombre'		=>	$nombreDeTipo
-				);
-				
-				array_push($this->tipo, $tipo);
-			} // foreach($resultadosTipo as $resultadoTipo) {
+			} // if( $resultadosTipo == false ) {
 		} // if($resultados == false) { ... else ...
 	} // function __construct($id) {
 	
@@ -63,7 +68,7 @@ class Usuario {
 	public function getNombre() { return $this->nombre; }
 	
 	
-	public function setNombre($nombre) {
+	public function setNombre( $nombre ) {
 		$this->bd->query('UPDATE usuarios SET nombre = ' . $this->bd->escapar($nombre) . ' WHERE id = ' . $this->id);
 		$this->nombre = $nombre;
 	} // public function setNombre($nombre) {
@@ -72,7 +77,7 @@ class Usuario {
 	public function getCorreo() { return $this->correo; }
 	
 	
-	public function setCorreo($correo) {
+	public function setCorreo( $correo ) {
 		$this->bd->query('UPDATE usuarios SET correo = ' . $this->bd->escapar($correo) . ' WHERE id = ' . $this->id);
 		$this->correo = $correo;
 	} // public function setNombre($nombre) {
@@ -81,7 +86,7 @@ class Usuario {
 	public function getCurriculum() { return $this->curriculum; }
 	
 	
-	public function setCurriculum($curriculum) {
+	public function setCurriculum( $curriculum ) {
 		$this->bd->query('UPDATE usuarios SET curriculum = ' . $this->bd->escapar($curriculum) . ' WHERE id = ' . $this->id);
 		$this->curriculum = $curriculum;
 	} // public function setcurriculum($curriculum) {
@@ -90,7 +95,7 @@ class Usuario {
 	public function getMatricula() { return $this->matricula; }
 	
 	
-	public function setMatricula($matricula) {
+	public function setMatricula( $matricula ) {
 		$this->bd->query('UPDATE usuarios SET matricula = ' . $this->bd->escapar($matricula) . ' WHERE id = ' . $this->id);
 		$this->matricula = $matricula;
 	} // public function setmatricula($matricula) {
@@ -99,7 +104,7 @@ class Usuario {
 	public function getNivelDeEstudios() { return $this->nivelDeEstudios; }
 	
 	
-	public function setNivelDeEstudios($nivelDeEstudios) {
+	public function setNivelDeEstudios( $nivelDeEstudios ) {
 		$this->bd->query('UPDATE usuarios SET nivel_estudios = ' . $this->bd->escapar($nivelDeEstudios) . ' WHERE id = ' . $this->id);
 		$this->nivelDeEstudios = $nivelDeEstudios;
 	} // public function setNivelDeEstudios($nivelDeEstudios) {
@@ -117,7 +122,7 @@ class Usuario {
 		return $contrasena;
 	} // public function getContrasena() {
 	
-	public function setContrasena($contrasena) {
+	public function setContrasena( $contrasena ) {
 		$hash = password_hash($contrasena, PASSWORD_BCRYPT);
 		$this->bd->query('UPDATE usuarios SET contrasena = ' . $hash . ' WHERE id = ' . $this->id);
 	} // public function setmatricula($matricula) {
@@ -162,16 +167,20 @@ class Usuario {
 	} // public function agregarTipo($tipo) {
 	
 	
-	public function quitarTipo($idTipo) {
-		$resultado = $this->bd->query("DELETE FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $this->bd->escapar($idTipo));
-		if($resultado == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
+	public function quitarTipo( $idTipo ) {
+		$resultado = $this->bd->query("DELETE FROM tipo_usuario WHERE id_usuario = " . $this->id . " AND id_tipo = " . $this->bd->escapar( $idTipo ));
+		if( $resultado == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+		} else {
 				
-		foreach($this->tipo as $key => $tipo) {
-			if($tipo['id'] == $idTipo) {
-				unset($this->tipo[$key]);
-				break;
-			} // if($tipo['id'] == $idTipo) {
-		} // foreach($this->tipo as $key => $tipo) {
+			foreach($this->tipo as $key => $tipo) {
+				if($tipo['id'] == $idTipo) {
+					unset($this->tipo[$key]);
+					break;
+				} // if($tipo['id'] == $idTipo) {
+			} // foreach($this->tipo as $key => $tipo) {
+			
+		} // if( $resultado == false ) {
 	} // public function quitarTipo($idTipo) {
 } // class Usuario {
 ?>
