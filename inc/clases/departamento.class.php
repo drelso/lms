@@ -1,11 +1,10 @@
 <?php
-// Clase Materia
+// Clase Departamento
 
-class Materia {
+class Departamento {
 	private $id;
 	private $nombre;
-	private $tema;
-	private $departamento;
+	private $director;
 	private $bd;
 	
 	function __construct($id) {
@@ -14,25 +13,15 @@ class Materia {
 		
 		$this->id = $this->bd->escapar( $id );
 		
-		require_once('tema.class.php');
-		
-		$this->tema = new Tema( $this->id );
-		
-		// Consulta a tabla de materia
-		$resultados = $this->bd->query("SELECT * FROM materia WHERE id = " . $this->id);
+		// Consulta a tabla de departamento
+		$resultados = $this->bd->query("SELECT * FROM departamento WHERE id = " . $this->id);
 		
 		if( $resultados == false ) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 		} else {
 			foreach( $resultados as $resultado ) {
 				$this->nombre	=	$resultado['nombre'];
-				
-				if( isset( $resultado['id_departamento'] ) ) {
-					require_once('departamento.class.php');
-					
-					$this->departamento = new Departamento( $resultado['id_departamento'] );
-				} // if( isset( $resultado['id_departamento'] ) ) {
-				
+				$this->director	=	$resultado['director'];
 				break;
 			} // foreach($resultados as $resultado) {
 		} // if($resultados == false) { ... else ...
@@ -46,7 +35,7 @@ class Materia {
 		
 		$nuevoID = $this->bd->escapar( $id );
 		
-		$existeID = $this->bd->query("SELECT * FROM materia WHERE id = " . $nuevoID );
+		$existeID = $this->bd->query("SELECT * FROM departamento WHERE id = " . $nuevoID );
 		
 		if( $existeID == false ) {
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
@@ -54,7 +43,7 @@ class Materia {
 		
 			if( $existeID->num_rows == 0 ) {
 				
-				$this->bd->query('UPDATE materia SET id = ' . $nuevoID . ' WHERE id = ' . $this->id);
+				$this->bd->query('UPDATE departamento SET id = ' . $nuevoID . ' WHERE id = ' . $this->id);
 				$this->id = $nuevoID;
 				
 			} else {
@@ -71,12 +60,18 @@ class Materia {
 	
 	
 	public function setNombre( $nombre ) {
-		$this->bd->query('UPDATE materia SET nombre = ' . $this->bd->escapar($nombre) . ' WHERE id = ' . $this->id);
+		$this->bd->query( 'UPDATE departamento SET nombre = ' . $this->bd->escapar( $nombre ) . ' WHERE id = ' . $this->id );
 		$this->nombre = $nombre;
 	} // public function setNombre($nombre) {
 	
 	
-	public function getTema() { return $this->tema; }
+	public function getDirector() { return $this->director; }
 	
-} // class Materia {
+	
+	public function setDirector( $director ) {
+		$this->bd->query( 'UPDATE departamento SET director = ' . $this->bd->escapar( $director ) . ' WHERE id = ' . $this->id );
+		$this->director = $director;
+	} // public function setDirector( $director ) {
+	
+} // class Departamento {
 ?>

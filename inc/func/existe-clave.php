@@ -1,12 +1,13 @@
 <?php
 
-if( isset( $_POST['clave'] ) ) {
+if( isset( $_POST['clave'] )
+	&& isset( $_POST['tabla'] ) ) {
 	
 	require_once('../db/bd.class.php');
 	$bd = new BD();
 	
 	// Consulta a tabla de tipos de materia
-	$existeClave = $bd->query("SELECT * FROM  materia WHERE id = " . $bd->escapar( $_POST['clave'] ) );
+	$existeClave = $bd->query("SELECT * FROM  " . $_POST['tabla'] . " WHERE id = " . $bd->escapar( $_POST['clave'] ) );
 	
 	if( $existeClave == false ) {
 		echo 'Hubo un error con la base de datos:' . $bd->error();

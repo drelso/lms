@@ -1,5 +1,8 @@
 <?php
-session_start();
+// Checa si la sesión ya existe
+if(session_id() == '' || !isset($_SESSION)) {
+    session_start();
+}
 
 require_once('config/config.php');
 ?>

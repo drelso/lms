@@ -1,7 +1,10 @@
 <?php
 // Panel de administrador
 
-session_start();
+// Checa si la sesión ya existe
+if( session_id() == '' || !isset( $_SESSION ) ) {
+    session_start();
+} // if( session_id() == '' || !isset( $_SESSION ) ) {
 
 $id = 0;
 $usuario;
@@ -46,15 +49,20 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 		require_once('inc/admin-func/func-admin-bd.php');
 		?>
 		
-        <form action="" method="post" id="agregar-usuario">
+        <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-usuario">
         	<h2>Agregar usuarios</h2>
-        	<input type="text" name="nombre" placeholder="Nombre" maxlength="255"/>
+        	
+            <input type="text" name="nombre" placeholder="Nombre" maxlength="255"/>
             <h6 class="error-nombre"></h6>
+            
         	<input type="text" name="matricula" placeholder="Matrícula" maxlength="10"/>
         	<input type="text" name="correo" placeholder="Correo" maxlength="255"/>
             <h6 class="error-correo"></h6>
+            
             <textarea name="curriculum" placeholder="Currículum" maxlength="10000"></textarea>
+            
         	<input type="number" name="nivel-estudios" placeholder="Nivel de estudios"/>
+            
         	<input type="password" name="contrasena" placeholder="Contraseña"/>
         	<input type="password" name="confirmar-contrasena" placeholder="Confirmar contraseña"/>
             <h6 class="error-contrasena"></h6>
@@ -80,12 +88,34 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 			?>
             <h6 class="error-tipo"></h6>
             
+            
+            <fieldset class="departamento-usuario">
+                <h4>Seleccione el departamento al que pertenece el usuario:</h4>
+                
+                <?php
+                // Consulta a tabla de departamento
+                $departamentos = $bd->query("SELECT * FROM departamento");
+                
+                if( $departamentos == false ) {
+                    return 'Hubo un error con la base de datos:' . $bd->error();
+                } else {
+                    $output = '';
+                    
+                    foreach( $departamentos as $departamento ) {
+                        $output .= '<label><input type="checkbox" name="departamento[]" value="' . $departamento['id'] . '"/>' . $departamento['nombre'] . '</label>';
+                    } // foreach( $departamentos as $departamento ) {
+                    
+                    echo $output;
+                } // if( $departamentos == false ) { ... else ...
+                ?>
+            </fieldset> <!-- /departamento-usuario -->
+            
             <input type="submit" value="Agregar"/>
             <input type="hidden" name="agregar-usuario" value="1"/>
         </form> <!-- /agregar-usuario -->
     	
         
-        <form action="" method="post" id="agregar-grupo">
+        <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-grupo">
         	<h2>Agregar grupo</h2>
         	<?php
 			// Consulta a join de tabla de tipo de usuario y usuario
@@ -147,12 +177,15 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 			} // if($tiposUsuarios == false) { ... else ...
 			?>
             
+            <input type="number" name="numero" value="1" placeholder="Número" />
+            <h6 class="error-numero"></h6>
+            
             <input type="submit" value="Agregar"/>
             <input type="hidden" name="agregar-grupo" value="1"/>
         </form> <!-- /agregar-grupo -->
         
         
-        <form action="" method="post" id="agregar-periodo">
+        <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-periodo">
         	<h2>Agregar periodo</h2>
             
         	<input type="text" name="nombre" placeholder="Nombre" maxlength="255"/>
@@ -165,7 +198,7 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
         </form> <!-- /agregar-grupo -->
         
         
-        <form action="<?php echo BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-materia">
+        <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-materia">
         	<h2>Agregar materia</h2>
             
             <input type="text" name="clave" placeholder="Clave" maxlength="10"/>
@@ -177,6 +210,23 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
             <input type="submit" value="Agregar"/>
             <input type="hidden" name="agregar-materia" value="1"/>
         </form> <!-- /agregar-materia -->
+        
+        
+        <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-departamento">
+        	<h2>Agregar departamento</h2>
+            
+            <input type="text" name="clave" placeholder="Clave" maxlength="11"/>
+            <h6 class="error-clave"></h6>
+            
+            <input type="text" name="nombre" placeholder="Nombre" maxlength="255"/>
+            <h6 class="error-nombre"></h6>
+            
+            <input type="text" name="director" placeholder="Director"/>
+            <h6 class="error-director"></h6>
+            
+            <input type="submit" value="Agregar"/>
+            <input type="hidden" name="agregar-departamento" value="1"/>
+        </form> <!-- /agregar-departamento -->
         
         
         <script type="text/javascript" src="inc/js/jquery-1.11.3.min.js"></script>

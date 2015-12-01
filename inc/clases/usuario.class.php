@@ -1,5 +1,7 @@
 <?php
 // Clase Usuario
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 class Usuario {
 	protected $id;
@@ -9,6 +11,7 @@ class Usuario {
 	protected $matricula;
 	protected $tipo = array();
 	protected $nivelDeEstudios;
+	protected $departamentos = array();
 	protected $bd;
 	
 	function __construct( $id ) {
@@ -58,6 +61,41 @@ class Usuario {
 				} // foreach($resultadosTipo as $resultadoTipo) {
 				
 			} // if( $resultadosTipo == false ) {
+			
+			
+			// Consulta a tabla de departamentos de usuario
+			$resultadosDepto = $this->bd->query("SELECT * FROM usuario_departamento WHERE id_usuario = " . $this->id);
+			
+			if( $resultadosDepto == false ) {
+				echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			} else {
+				
+				if( $resultadosDepto->num_rows > 0 ) {
+					foreach( $resultadosDepto as $resultadoDepto ) {
+						$nombresDepto = $this->bd->query("SELECT * FROM departamento WHERE id = '" . $resultadoDepto['id_departamento'] . "'");
+						$nombreDeDepto;
+						
+						if( $nombresDepto == false ) {
+							echo 'Hubo un error con la base de datos:' . $this->bd->error();
+						} else {
+							if( $nombresDepto->num_rows > 0 ) {
+								foreach( $nombresDepto as $nombreDepto ) {
+									$nombreDeDepto = $nombreDepto['nombre'];
+									break;
+								} // foreach($resultados as $resultado) {
+								
+								$depto = array(
+									'id'			=>	$resultadoDepto['id_departamento'],
+									'nombre'		=>	$nombreDeDepto
+								);
+								
+								array_push( $this->departamentos, $depto );
+							} // if( $nombresDepto->num_rows > 0 ) {
+						} // if( $nombresDepto == false ) { ... else ...
+					} // foreach($resultadosDepto as $resultadoDepto) {
+				} // if( $resultadosDepto->num_rows > 0 ) {
+			} // if( $resultadosDepto == false ) {
+			
 		} // if($resultados == false) { ... else ...
 	} // function __construct($id) {
 	
@@ -122,6 +160,7 @@ class Usuario {
 		return $contrasena;
 	} // public function getContrasena() {
 	
+	
 	public function setContrasena( $contrasena ) {
 		$hash = password_hash($contrasena, PASSWORD_BCRYPT);
 		$this->bd->query('UPDATE usuarios SET contrasena = ' . $hash . ' WHERE id = ' . $this->id);
@@ -182,5 +221,38 @@ class Usuario {
 			
 		} // if( $resultado == false ) {
 	} // public function quitarTipo($idTipo) {
+	
+	
+	public function getDepartamentos() { return $this->departamentos; }
+	
+	
+	public function agregarDepartamento( $idDepartamento ) {
+		$tieneDepto = $this->bd->query("SELECT * FROM usuario_departamento WHERE id_usuario = " . $this->id . " AND id_departamento = " . $this->bd->escapar( $idDepartamento ));
+		
+		if( $tieneDepto == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+		} else {
+		
+			if( $tieneDepto->num_rows == 0 ) {
+				$resultado = $this->bd->query("INSERT INTO usuario_departamento (id_usuario,id_departamento) VALUES (" . $this->id . ", " . $this->bd->escapar( $idDepartamento ) . ")" );
+				if($resultado == false) {
+					echo 'Hubo un error con la base de datos:' . $this->bd->error();
+				} else { array_push($this->departamentos, $idDepartamento); }
+				
+			} // if( empty( $tieneDepto ) ) {
+			
+		} // if( $tieneDepto == false ) { ... else ...
+	} // public function agregarDepartamento( $idDepartamento ) {
+	
+	
+	public function quitarDepartamento( $idDepartamento ) {
+		$resultado = $this->bd->query("DELETE FROM usuario_departamento WHERE id_usuario = " . $this->id . " AND id_departamento = '" . $this->bd->escapar( $idDepartamento ) . "'" );
+		
+		if($resultado == false) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
+				
+		$posicion = array_search( $idDepartamento, $this->departamentos );
+		
+		if( $posicion != false ) { unset( $this->departamentos[$posicion] ); }
+	} // public function quitarDepartamento( $idDepartamento ) {
 } // class Usuario {
 ?>

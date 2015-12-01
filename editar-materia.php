@@ -9,7 +9,7 @@ require_once( 'inc/config/config.php' );
 echo 'Editar materia';
 
 if( isset( $_GET['error'] ) ) {
-	echo urldecode( $_GET['error'] );
+	echo '<h1 class="mensaje-error">' . urldecode( $_GET['error'] ) . '</h1>';
 } else {
 
 	if( isset( $_GET['id'] ) ) {
@@ -18,10 +18,10 @@ if( isset( $_GET['error'] ) ) {
 		$bd = new BD();
 		
 		// Consulta a tabla de usuarios
-		$resultados = $bd->query("SELECT * FROM materia WHERE id = " . intval( $_GET['id'] ) );
+		$resultados = $bd->query("SELECT * FROM materia WHERE id = " . $bd->escapar( urldecode( $_GET['id'] ) ) );
 		
 		if( $resultados == false ) {
-			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			echo 'Hubo un error con la base de datos:' . $bd->error();
 		} else {
 			
 			if( $resultados->num_rows > 0 ) {

@@ -1,31 +1,40 @@
 <?php
 // Clase Administrador
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 require_once('usuario.class.php');
 
 class Administrador extends Usuario {
 	
-	public function agregarUsuario($nombre, $correo, $contrasena, $matricula, $curriculum, $nivelDeEstudios, $tipos = NULL) {
+	public function agregarUsuario($nombre, $correo, $contrasena, $matricula, $curriculum, $nivelDeEstudios, $tipos = NULL, $departamentos = NULL) {
 		
 		// Consulta a tabla de usuarios
 		$resultados = $this->bd->query("SELECT * FROM usuarios WHERE nombre = " . $this->bd->escapar($nombre) . " AND correo = " . $this->bd->escapar($correo));
 		
 		if( $resultados == false ) {
-			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			return 'Hubo un error con la base de datos:' . $this->bd->error();
 		} elseif( $resultados->num_rows > 0 ) {
 			require_once('usuario.class.php');
 			
 			foreach( $resultados as $resultado ) {
 				$nuevoUsuario = new Usuario($resultado['id']);
 				
-				var_dump($nuevoUsuario);
-				
-				if( isset($tipos) ) {
+				if( isset( $tipos ) ) {
 					
 					foreach( $tipos as $tipoUsuario ) {
 						$nuevoUsuario->agregarTipo( intval( $tipoUsuario ) );
 					} // foreach( $tipos as $tipoUsuario ) {
-				} // if( isset($tipos) ) {
+						
+				} // if( isset( $tipos ) ) {
+				
+				if( isset( $departamentos ) ) {
+					
+					foreach( $departamentos as $departamento ) {
+						$nuevoUsuario->agregarDepartamento( $departamento );
+					} // foreach( $departamentos as $departamento ) {
+						
+				} // if( isset( $departamentos ) ) {
 				
 				return $nuevoUsuario;
 				
@@ -35,7 +44,7 @@ class Administrador extends Usuario {
 			
 			$hash = password_hash($contrasena, PASSWORD_BCRYPT);
 			
-			$insercion = $this->bd->query("INSERT INTO usuarios (nombre, correo, contrasena, matricula, curriculum, nivel_estudios) VALUES (" . $this->bd->escapar($nombre) . "," . $this->bd->escapar($correo) . ",'" . $hash . "'," . $this->bd->escapar($matricula) . "," . $this->bd->escapar(curriculum) . "," . $this->bd->escapar($nivelDeEstudios) . ")");
+			$insercion = $this->bd->query("INSERT INTO usuarios (nombre, correo, contrasena, matricula, curriculum, nivel_estudios) VALUES (" . $this->bd->escapar($nombre) . "," . $this->bd->escapar($correo) . ",'" . $hash . "'," . $this->bd->escapar($matricula) . "," . $this->bd->escapar($curriculum) . "," . $this->bd->escapar($nivelDeEstudios) . ")");
 			
 			if( $insercion == false ) {
 				echo 'Hubo un error con la base de datos:' . $this->bd->error();
@@ -52,12 +61,19 @@ class Administrador extends Usuario {
 					foreach( $usuarioNuevo as $usuario ) {
 						$nuevoUsuario = new Usuario( $usuario['id'] );
 						
-						if( isset($tipos) ) {
+						if( isset( $tipos ) ) {
 							foreach( $tipos as $tipoUsuario ) {
 								$nuevoUsuario->agregarTipo( intval( $tipoUsuario ) );
 							} // foreach( $tipos as $tipoUsuario ) {
-						} // if( isset($tipos) ) {
-					
+						} // if( isset( $tipos ) ) {
+						
+						
+						if( isset( $departamentos ) ) {
+							foreach( $departamentos as $departamento ) {
+								$nuevoUsuario->agregarDepartamento( $departamento );
+							} // foreach( $departamentos as $departamento ) {
+						} // if( isset( $departamentos ) ) {
+						
 						return $nuevoUsuario;
 						
 						break;
@@ -69,10 +85,10 @@ class Administrador extends Usuario {
 	} // public function agregarUsuario($nombre,$correo,$curriculum,$matricula,$nivelDeEstudios, $tipos = NULL) {
 	
 	
-	public function agregarGrupo($idMateria, $idProfesor, $idPeriodo) {
+	public function agregarGrupo($idMateria, $idProfesor, $idPeriodo, $numero) {
 		
 		// Consulta a tabla de grupos
-		$resultados = $this->bd->query("SELECT * FROM grupos WHERE id_materia = " . $this->bd->escapar($idMateria) . " AND id_profesor = " . $this->bd->escapar($idProfesor) . " AND id_periodo = " . $this->bd->escapar($idPeriodo));
+		$resultados = $this->bd->query("SELECT * FROM grupos WHERE id_materia = " . $this->bd->escapar($idMateria) . " AND id_profesor = " . $this->bd->escapar($idProfesor) . " AND id_periodo = " . $this->bd->escapar($idPeriodo) . " AND numero = " . $this->bd->escapar($numero) );
 		
 		if( $resultados == false ) {
 			
@@ -88,11 +104,11 @@ class Administrador extends Usuario {
 			
 		} else {
 			
-			$insercion = $this->bd->query("INSERT INTO grupos (id_materia,id_profesor,id_periodo) VALUES (" . $this->bd->escapar($idMateria) . "," . $this->bd->escapar($idProfesor) . "," . $this->bd->escapar($idPeriodo) . ")");
+			$insercion = $this->bd->query("INSERT INTO grupos (id_materia,id_profesor,id_periodo,numero) VALUES (" . $this->bd->escapar($idMateria) . "," . $this->bd->escapar($idProfesor) . "," . $this->bd->escapar($idPeriodo) . "," . $this->bd->escapar($numero) . ")");
 			
 			if( $insercion == false ) { echo 'Hubo un error con la base de datos:' . $this->bd->error(); }
 			
-			$grupos = $this->bd->query("SELECT * FROM grupos WHERE id_materia = " . $this->bd->escapar($idMateria) . " AND id_profesor = " . $this->bd->escapar($idProfesor) . " AND id_periodo = " . $this->bd->escapar($idPeriodo));
+			$grupos = $this->bd->query("SELECT * FROM grupos WHERE id_materia = " . $this->bd->escapar($idMateria) . " AND id_profesor = " . $this->bd->escapar($idProfesor) . " AND id_periodo = " . $this->bd->escapar($idPeriodo) . " AND numero = " . $this->bd->escapar($numero) );
 			
 			require_once('grupo.class.php');
 			
@@ -112,7 +128,7 @@ class Administrador extends Usuario {
 			
 			echo 'Hubo un error con la base de datos:' . $this->bd->error();
 			
-		} elseif( empty( $resultados ) ) {
+		} elseif( $resultados->num_rows == 0 ) {
 			$this->bd->query("INSERT INTO materia (nombre) VALUES (" . $this->bd->escapar($nombre));
 			
 			$idMateria = $this->bd->idInsertado();

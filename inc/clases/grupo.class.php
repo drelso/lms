@@ -7,6 +7,7 @@ class Grupo {
 	private $estudiantes = array();
 	private $idProfesor;
 	private $idInterfaz;
+	private $numero;
 	private $periodo;
 	private $bd;
 	
@@ -26,6 +27,7 @@ class Grupo {
 				$this->idMateria	=	$resultado['id_materia'];
 				$this->idProfesor	=	$resultado['id_profesor'];
 				$this->idInterfaz	=	$resultado['id_interfaz'];
+				$this->numero		=	$resultado['numero'];
 				
 				require_once('periodo.class.php');
 				$this->periodo		=	new Periodo($resultado['id_periodo']);
@@ -138,6 +140,15 @@ class Grupo {
 		$this->bd->query('UPDATE grupos SET id_interfaz = ' . $this->bd->escapar($idInterfaz) . ' WHERE id = ' . $this->id);
 		$this->idInterfaz = $idInterfaz;
 	} // public function setIdInterfaz($idInterfaz) {
+	
+	
+	public function getNumero() { return $this->numero; }
+	
+	
+	public function setNumero( $numero ) {
+		$this->bd->query('UPDATE grupos SET numero = ' . $this->bd->escapar($numero) . ' WHERE id = ' . $this->id);
+		$this->numero = $numero;
+	} // public function setNumero($numero) {
 	
 	
 	public function getPeriodo() { return $this->periodo; }
