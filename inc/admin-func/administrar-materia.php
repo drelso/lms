@@ -42,12 +42,13 @@
 
     <div class="oculto">
         <div id="campo-agregar-modulo">
-            <fieldset>
+            <fieldset class="modulo">
                 <input type="text" name="modulo[]" placeholder="Módulo" />
                 
                 <div class="contenidos"></div>
                 
                 <a class="agregar-contenido">Agregar otro contenido</a>
+            	<a class="agregar-evaluacion">Agregar evaluación</a>
             </fieldset>
         </div> <!-- /campo-agregar-modulo -->
         
@@ -66,7 +67,7 @@
         
         <div id="campo-agregar-evaluacion">
             <div class="contenido">
-                <input type="text" name="nombre-evaluacion" placeholder="Nombre de la evaluación"/>
+                <input type="text" name="nombre-contenido" placeholder="Nombre de la evaluación"/>
                 
                 <div class="preguntas">
                 </div> <!-- /preguntas -->
@@ -110,7 +111,7 @@
     
     <form action="" method="post" id="agregar-tema" enctype="multipart/form-data">
     	<div id="modulos">
-            <fieldset>
+            <fieldset class="modulo">
                 <input type="text" name="modulo[]" placeholder="Módulo" />
                 
                 <div class="contenidos"></div>

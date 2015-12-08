@@ -162,12 +162,65 @@ class Usuario {
 	
 	
 	public function setContrasena( $contrasena ) {
+		
+		echo 'Contraseña: ' . $contrasena;
+		
 		$hash = password_hash($contrasena, PASSWORD_BCRYPT);
-		$this->bd->query('UPDATE usuarios SET contrasena = ' . $hash . ' WHERE id = ' . $this->id);
-	} // public function setmatricula($matricula) {
+		
+		echo 'USUARIO ' . $this->id;
+		
+		$actualizacion = $this->bd->query('UPDATE usuarios SET contrasena = "' . $hash . '" WHERE id = ' . $this->id);
+		
+		if( $actualizacion == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+		}
+		
+	} // public function setContrasena($contrasena) {
 	
 	
 	public function getTipo() { return $this->tipo; }
+	
+	
+	public function setTipo( $idTipos ) {
+		$tiposActuales = $this->bd->query( "SELECT * FROM tipo_usuario WHERE id_usuario = " . $this->id );
+		
+		$tiposAnteriores = array();
+		
+		if( $tiposActuales == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+		} else {
+		
+			if( $tiposActuales->num_rows != 0 ) {
+				
+				$eliminacion = $this->bd->query( "DELETE FROM tipo_usuario WHERE id_usuario = " . $this->id );
+				
+				if( $eliminacion == false ) {
+					echo 'Hubo un error con la base de datos:' . $this->bd->error();
+				} // if( $eliminacion == false ) {
+				
+			} // if( $tiposActuales->num_rows != 0 ) {
+			
+			foreach( $idTipos as $idTipo ) {
+				
+				$insercion = $this->bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $this->bd->escapar( $idTipo ) . ")");
+				
+				if( $insercion == false ) {
+					
+					echo 'Hubo un error con la base de datos:' . $this->bd->error();
+					
+					foreach( $tiposActuales as $tipoActual ) {
+				
+						$insercion = $this->bd->query("INSERT INTO tipo_usuario (id_usuario,id_tipo) VALUES (" . $this->id . "," . $tipoActual['id_tipo'] . ")");
+						
+					} // foreach( $idTipos as $idTipo ) {
+					
+				} // if( $insercion == false ) {
+				
+			} // foreach( $idTipos as $idTipo ) {
+			
+		} // if( $tiposActuales == false ) {
+				
+	} // public function setTipo( $idTipos ) {
 	
 	
 	public function agregarTipo( $idTipo ) {
@@ -224,6 +277,48 @@ class Usuario {
 	
 	
 	public function getDepartamentos() { return $this->departamentos; }
+	
+	
+	public function setDepartamentos( $idDeptos ) {
+		$deptosActuales = $this->bd->query( "SELECT * FROM usuario_departamento WHERE id_usuario = " . $this->id );
+		
+		$deptosAnteriores = array();
+		
+		if( $deptosActuales == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+		} else {
+		
+			if( $deptosActuales->num_rows != 0 ) {
+				
+				$eliminacion = $this->bd->query( "DELETE FROM usuario_departamento WHERE id_usuario = " . $this->id );
+				
+				if( $eliminacion == false ) {
+					echo 'Hubo un error con la base de datos:' . $this->bd->error();
+				} // if( $eliminacion == false ) {
+				
+			} // if( $deptosActuales->num_rows != 0 ) {
+			
+			foreach( $idDeptos as $idDepto ) {
+				
+				$insercion = $this->bd->query("INSERT INTO usuario_departamento (id_usuario,id_departamento) VALUES (" . $this->id . "," . $this->bd->escapar( $idDepto ) . ")");
+				
+				if( $insercion == false ) {
+					
+					echo 'Hubo un error con la base de datos:' . $this->bd->error();
+					
+					foreach( $deptosActuales as $deptoActual ) {
+				
+						$insercion = $this->bd->query("INSERT INTO tipo_usuario (id_usuario,id_departamento) VALUES (" . $this->id . "," . $deptoActual['id_departamento'] . ")");
+						
+					} // foreach( $idDeptos as $idDepto ) {
+					
+				} // if( $insercion == false ) {
+				
+			} // foreach( $idDeptos as $idDepto ) {
+			
+		} // if( $deptosActuales == false ) {
+				
+	} // public function setDepartamento( $idDeptos ) {
 	
 	
 	public function agregarDepartamento( $idDepartamento ) {

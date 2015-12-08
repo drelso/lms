@@ -1,5 +1,20 @@
 // Script para agregar y acomodar temas
 
+/* Segundo intento de impresión de información
+$('#agregar-tema input[type="submit"]').click(function(e) {
+	'use strict';
+	
+	e.preventDefault();
+	
+	var $this = $('#agregar-tema');
+	
+	var modulos = $this.children('fieldset');
+	
+	console.log(modulos);
+	
+}); // $('#agregar-tema input[type="submit"]').click(function(e) {
+*/
+
 $('#agregar-modulo').click(function() {
 	'use strict';
 	
@@ -200,7 +215,7 @@ $('#agregar-tema').submit(function(e) {
 	
     e.preventDefault();
 	
-	var modulos = $(this).find('fieldset');
+	var modulos = $(this).find('fieldset.modulo');
 	
 	modulos.each(function(index, element) {
 		var modulo = modulos.eq( index );
@@ -225,6 +240,7 @@ $('#agregar-tema').submit(function(e) {
 
 
 $('#agregar-tema').submit(function(e) {
+	'use strict';
 	
 	e.preventDefault();
 	

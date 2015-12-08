@@ -48,8 +48,11 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 		
 		require_once('inc/admin-func/func-admin-bd.php');
 		?>
-		
+    
+        <a href="<?= BASEDIR; ?>/editar.php?modo=1">Editar usuarios</a>
+        
         <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-usuario">
+        
         	<h2>Agregar usuarios</h2>
         	
             <input type="text" name="nombre" placeholder="Nombre" maxlength="255"/>
@@ -61,7 +64,18 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
             
             <textarea name="curriculum" placeholder="Currículum" maxlength="10000"></textarea>
             
-        	<input type="number" name="nivel-estudios" placeholder="Nivel de estudios"/>
+        	<!--<input type="number" name="nivel-estudios" placeholder="Nivel de estudios"/>-->
+            <select name="nivel-estudios">
+            	<option value="0">Nivel de estudios</option>
+                <option value="1">Primaria</option>
+				<option value="2">Secundaria</option>
+                <option value="3">Preparatoria</option>
+                <option value="4">Universidad (Parcial)</option>
+                <option value="5">Universidad (Total)</option>
+                <option value="6">Maestría</option>
+                <option value="7">Doctorado</option>
+                <option value="8">Posdoctorado</option>
+            </select> <!-- /nivel-estudios -->
             
         	<input type="password" name="contrasena" placeholder="Contraseña"/>
         	<input type="password" name="confirmar-contrasena" placeholder="Confirmar contraseña"/>
@@ -75,7 +89,7 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 			$tiposUsuarios = $bd->query("SELECT * FROM tipos_usuarios");
 			
 			if($tiposUsuarios == false) {
-				return 'Hubo un error con la base de datos:' . $bd->error();
+				echo 'Hubo un error con la base de datos:' . $bd->error();
 			} else {
 				$output = '';
 				
@@ -97,7 +111,7 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
                 $departamentos = $bd->query("SELECT * FROM departamento");
                 
                 if( $departamentos == false ) {
-                    return 'Hubo un error con la base de datos:' . $bd->error();
+                    echo 'Hubo un error con la base de datos:' . $bd->error();
                 } else {
                     $output = '';
                     
@@ -114,6 +128,10 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
             <input type="hidden" name="agregar-usuario" value="1"/>
         </form> <!-- /agregar-usuario -->
     	
+        
+    
+        <a href="<?= BASEDIR; ?>/editar.php?modo=2">Editar grupos</a>
+        
         
         <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-grupo">
         	<h2>Agregar grupo</h2>
@@ -184,6 +202,9 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
             <input type="hidden" name="agregar-grupo" value="1"/>
         </form> <!-- /agregar-grupo -->
         
+    
+        <a href="<?= BASEDIR; ?>/editar.php?modo=3">Editar periodos</a>
+        
         
         <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-periodo">
         	<h2>Agregar periodo</h2>
@@ -196,6 +217,9 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
         	<input type="submit" value="Agregar"/>
         	<input type="hidden" name="agregar-periodo" value="1"/>
         </form> <!-- /agregar-grupo -->
+        
+    
+        <a href="<?= BASEDIR; ?>/editar.php?modo=4">Editar materias</a>
         
         
         <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-materia">
@@ -210,6 +234,9 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
             <input type="submit" value="Agregar"/>
             <input type="hidden" name="agregar-materia" value="1"/>
         </form> <!-- /agregar-materia -->
+        
+    
+        <a href="<?= BASEDIR; ?>/editar.php?modo=5">Editar departamentos</a>
         
         
         <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-departamento">
