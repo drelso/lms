@@ -1,5 +1,9 @@
 <?php
-echo 'Actualizando usuario\n';
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+session_start();
 
 if( isset( $_POST['modo'] ) &&
 	isset( $_POST['id'] ) ) {
@@ -22,7 +26,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setNombre( $_POST['nombre'] );
 				
-				echo 'Cambió nombre';
+				echo 'Cambió nombre<br>';
 				
 			} // if( !empty( $_POST['nombre'] ) && ...
 			
@@ -40,7 +44,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setMatricula( $_POST['matricula'] );
 				
-				echo 'Cambió matrícula';
+				echo 'Cambió matrícula<br>';
 				
 			} // if( !empty( $_POST['matricula'] ) && ...
 			
@@ -58,7 +62,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setCorreo( $_POST['correo'] );
 				
-				echo 'Cambió correo';
+				echo 'Cambió correo<br>';
 				
 			} // if( !empty( $_POST['correo'] ) &&
 			
@@ -74,7 +78,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setCurriculum( $_POST['curriculum'] );
 				
-				echo 'Cambió cv';
+				echo 'Cambió CV<br>';
 				
 			} // if( $_POST['curriculum'] !== $usuario->getCurriculum() ) {
 			
@@ -89,9 +93,9 @@ if( isset( $_POST['modo'] ) &&
 			if( !empty( $_POST['nivelEstudios'] ) &&
 				$_POST['nivelEstudios'] !== $usuario->getNivelDeEstudios() ) {
 				
-				$usuario->setNivelDeEstudios( $_POST['nivel-estudios'] );
+				$usuario->setNivelDeEstudios( $_POST['nivelEstudios'] );
 				
-				echo 'Cambió nivel de estudios';
+				echo 'Cambió nivel de estudios<br>';
 				
 			} // if( $_POST['nivel-estudios'] !== '' && ...
 			
@@ -109,7 +113,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setContrasena( $_POST['contrasena'] );
 				
-				echo 'Cambió contraseña';
+				echo 'Cambió contraseña<br>';
 				
 			} // if( !empty( $_POST['contrasena'] ) && ...
 			
@@ -140,7 +144,7 @@ if( isset( $_POST['modo'] ) &&
 					
 					$usuario->setTipo( $_POST['tipo'] );
 					
-					echo 'Los arreglos son diferentes';
+					echo 'Los tipos cambiaron<br>';
 				} // if( $idTipos == $_POST['tipo'] ) {
 				
 			} // if( !empty( $_POST['tipo'] ) ) {
@@ -170,7 +174,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setDepartamentos( $_POST['departamento'] );
 				
-				echo 'Los arreglos son diferentes';
+				echo 'Los departamentos cambiaron';
 			} // if( $idDeptos == $_POST['departamento'] ) {
 			
 		} // if( isset( $_POST['departamento'] ) {
@@ -178,5 +182,31 @@ if( isset( $_POST['modo'] ) &&
 		
 	} // if( $_POST['modo'] == 'usuario' ) {
 	
-} // if( isset( $_POST['modo'] ) ) {
+	if( $_POST['modo'] == 'eliminar-usuario' ) {
+		
+		echo 'Modo eliminar usuario';
+		
+		if( isset( $_SESSION['usuario_registrado'] ) ) {
+			$idAdmin = intval( $_SESSION['usuario_registrado'] );
+			
+			echo 'Existe la variable de sesión';
+			
+			if( $idAdmin > 0 ) {
+				require_once('../clases/administrador.class.php');
+				$administrador = new Administrador( $idAdmin );
+			} // if($id > 0) {
+			
+			if( isset( $administrador ) && !empty( $administrador ) ) {
+				
+				$id = intval( $_POST['id'] );
+				
+				echo 'A punto de eliminar al usuario ' . $id;
+				$administrador->eliminarUsuario( $id );
+				
+			} // if( isset( $administrador ) && !empty( $administrador ) ) {
+			
+		} // if( isset( $_SESSION['usuario_registrado'] ) ) {
+	} // if( $_POST['modo'] == 'eliminar-usuario' ) {
+	
+} // if( isset( $_POST['modo'] ) && ...
 ?>

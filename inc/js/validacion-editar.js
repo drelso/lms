@@ -19,7 +19,7 @@ $('.agregar-usuario').submit(function(e) {
 	var matricula			=	$(this).children('input[name="matricula"]').val();
 	var correo				=	$(this).children('input[name="correo"]').val();
 	var curriculum			=	$(this).children('textarea[name="curriculum"]').val();
-	var nivelEstudios		=	$(this).children('input[name="nivel-estudios"]').val();
+	var nivelEstudios		=	$(this).children('select[name="nivel-estudios"]').val();
 	var contrasena			=	$(this).children('input[name="contrasena"]').val();
 	var confirmarContrasena	=	$(this).children('input[name="confirmar-contrasena"]').val();
 	var tipo					=	$(this).find('input[name="tipo[]"]:checked');
@@ -109,7 +109,11 @@ $('.agregar-usuario').submit(function(e) {
 	} // if( departamento.length > 0 ) {
 	
 	
+	var $this = $(this);
+	
 	if( !error ) {
+		
+		$this.find('.loading').fadeIn( 300 );
 		
 		$.post( "inc/admin-func/actualizar-edicion.func.php",
 			{
@@ -127,21 +131,74 @@ $('.agregar-usuario').submit(function(e) {
 			})
 		.done(function( datos ) {
 			
+			console.log(id + ' ' + datos);
+			
+			var resultado = datos;
+			var mensajeError = '';
+			
+			$this.find('.loading').fadeOut( 300 );
+			
+		})
+		.fail( function(xhr, textStatus, errorThrown ) {
+			mensajeError = xhr.responseText;
+			agregarMateria.find('.error-clave').html(mensajeError);
+			
+			$this.find('.loading').fadeOut( 300 );
+		});
+	} // if( !error ) {*/
+	
+}); // $('.agregar-usuario').submit(function(e) {
+
+
+$('.eliminar-usuario').click(function(e) {
+    // Bloque para desplegar diálogo de confirmación
+	$('#shadow-box h1').html('¿Quiere eliminar este usuario?');
+	$('#shadow-box').fadeIn( 300 );
+	$('#shadow-box .confirmar').focus();
+	
+	var id = $(this).attr('data-id');
+	var $this = $(this);
+	
+	// Si el usuario confirma se elimina el contenido
+	$('#shadow-box .confirmar').on('click', function() {
+		$('#shadow-box').fadeOut( 300 );
+		
+		$('#loading-eliminar-usuario-'+id).fadeIn( 300 );
+		
+		$.post( "inc/admin-func/actualizar-edicion.func.php",
+			{
+				modo:	'eliminar-usuario',
+				id:		id
+			})
+		.done(function( datos ) {
 			
 			console.log(id + ' ' + datos);
 			
 			var resultado = datos;
 			var mensajeError = '';
 			
+			$('#agregar-usuario-' + id).fadeOut( 300 );
+			$this.fadeOut( 300 );
+			$('#loading-eliminar-usuario-' + id).fadeOut( 300 );
+			
 		})
 		.fail( function(xhr, textStatus, errorThrown ) {
 			mensajeError = xhr.responseText;
 			agregarMateria.find('.error-clave').html(mensajeError);
+			
+			$this.find('.loading').fadeOut( 300 );
 		});
-	} // if( !error ) {*/
+		
+		$('#shadow-box .confirmar').on('click', function() {});
+	}); // $('#shadow-box .confirmar').on('click', function() {
 	
-}); // $('.agregar-usuario').submit(function(e) {
-
+	// Si el usuario rechaza desaparece el cuadro de diálogo
+	$('#shadow-box .rechazar').on('click', function() {
+		$('#shadow-box').fadeOut( 300 );
+		
+		$('#shadow-box .rechazar').on('click', function() {});
+	}); // $('#shadow-box .rechazar').on('click', function() {
+}); // $('.eliminar-usuario').click(function(e) {
 
 var error = false;
 var agregarGrupo = $('#agregar-grupo');

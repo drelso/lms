@@ -141,14 +141,14 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 										FROM usuarios a, tipo_usuario b
 										WHERE a.id = b.id_usuario AND b.id_tipo = 2");
 			
-			if($tiposUsuarios == false) {
+			if( $tiposUsuarios == false ) {
 				echo 'Hubo un error con la base de datos:' . $bd->error();
 			} else {
 				$output = '<select name="profesor">';
 				$output .= '<option value="0">Elegir profesor</option>';
 				
 				foreach( $tiposUsuarios as $tipoUsuarios ) {
-					$output .= '<option value="' . $tipoUsuarios['id'] . '"/>' . $tipoUsuarios['nombre'] . '</option>';
+					$output .= '<option value="' . $tipoUsuarios['id'] . '">' . $tipoUsuarios['nombre'] . '</option>';
 				} // foreach( $tiposUsuarios as $tipoUsuarios ) {
 				
 				$output .= '</select> <!-- /profesor -->';
@@ -160,14 +160,14 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 			// Consulta a join de tabla de materia
 			$materias = $bd->query("SELECT * FROM materia");
 			
-			if($materias == false) {
+			if( $materias == false ) {
 				echo 'Hubo un error con la base de datos:' . $bd->error();
 			} else {
 				$output = '<select name="materia">';
 				$output .= '<option value="0">Elegir materia</option>';
 				
 				foreach( $materias as $materia ) {
-					$output .= '<option name="materia" value="' . $materia['id'] . '"/>' . $materia['nombre'] . '</option>';
+					$output .= '<option name="materia" value="' . $materia['id'] . '">' . $materia['nombre'] . '</option>';
 				} // foreach( $tiposUsuarios as $tipoUsuarios ) {
 				
 				$output .= '</select> <!-- /materia -->';
@@ -179,14 +179,14 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 			// Consulta a join de tabla de periodos
 			$periodos = $bd->query("SELECT * FROM periodos");
 			
-			if($periodos == false) {
+			if( $periodos == false ) {
 				echo 'Hubo un error con la base de datos:' . $bd->error();
 			} else {
 				$output = '<select name="periodo">';
 				$output .= '<option value="0">Elegir periodo</option>';
 				
 				foreach( $periodos as $periodo ) {
-					$output .= '<option value="' . $periodo['id'] . '"/>' . $periodo['nombre'] . ' – ' . $periodo['descripcion'] . '</option>';
+					$output .= '<option value="' . $periodo['id'] . '">' . $periodo['nombre'] . ' – ' . $periodo['descripcion'] . '</option>';
 				} // foreach( $tiposUsuarios as $tipoUsuarios ) {
 				
 				$output .= '</select> <!-- /periodo -->';

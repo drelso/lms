@@ -163,11 +163,7 @@ class Usuario {
 	
 	public function setContrasena( $contrasena ) {
 		
-		echo 'Contraseña: ' . $contrasena;
-		
 		$hash = password_hash($contrasena, PASSWORD_BCRYPT);
-		
-		echo 'USUARIO ' . $this->id;
 		
 		$actualizacion = $this->bd->query('UPDATE usuarios SET contrasena = "' . $hash . '" WHERE id = ' . $this->id);
 		

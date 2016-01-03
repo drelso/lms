@@ -85,6 +85,55 @@ class Administrador extends Usuario {
 	} // public function agregarUsuario($nombre,$correo,$curriculum,$matricula,$nivelDeEstudios, $tipos = NULL) {
 	
 	
+	public function eliminarUsuario( $idUsuario ) {
+		$id = intval( $idUsuario );
+		
+		$error = false;
+		
+		$eliminarTipos = $this->bd->query("DELETE FROM tipo_usuario WHERE id_usuario = " . $id );
+		
+		if( $eliminarTipos == false ) {
+			echo 'Hubo un error con la base de datos:' . $this->bd->error();
+			$error = true;
+		} // if( $eliminarTipos == false ) {
+		
+		if( !$error ) {
+			$eliminarDeptos = $this->bd->query("DELETE FROM usuario_departamento WHERE id_usuario = " . $id );
+			
+			if( $eliminarDeptos == false ) {
+				echo 'Hubo un error con la base de datos:' . $this->bd->error();	
+				$error = true;
+			} // if( $eliminarDeptos == false ) {
+		} // if( !$error ) {
+		
+		if( !$error ) {
+			$eliminarGrupos = $this->bd->query("DELETE FROM usuario_grupo WHERE id_usuario = " . $id );
+			
+			if( $eliminarGrupos == false ) {
+				echo 'Hubo un error con la base de datos:' . $this->bd->error();	
+				$error = true;
+			} // if( $eliminarGrupos == false ) {
+		} // if( !$error ) {
+		
+		if( !$error ) {
+			$quitarGrupos = $this->bd->query("UPDATE grupos SET id_profesor = NULL WHERE id_profesor = " . $id );
+			
+			if( $quitarGrupos == false ) {
+				echo 'Hubo un error con la base de datos:' . $this->bd->error();	
+				$error = true;
+			} // if( $quitarGrupos == false ) {
+		} // if( !$error ) {
+		
+		if( !$error ) {
+			$eliminarUsuario = $this->bd->query("DELETE FROM usuarios WHERE id = " . $id );
+			
+			if( $eliminarUsuario == false ) {
+				echo 'Hubo un error con la base de datos:' . $this->bd->error();		
+			} // if( $eliminarGrupos == false ) {
+		} // if( !$error ) {
+	} // public function eliminarUsuario( $idUsuario ) {
+	
+	
 	public function agregarGrupo($idMateria, $idProfesor, $idPeriodo, $numero) {
 		
 		// Consulta a tabla de grupos

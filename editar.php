@@ -105,8 +105,7 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
 				if( $tabla == 'usuarios' ) {
 					foreach( $resultados as $resultado ) {
 						
-						// Formulario para editar usuarios
-						?>
+						// Formulario para editar usuarios ?>
 						
                         <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" class="agregar-usuario" id="agregar-usuario-<?= $resultado['id']; ?>">
         
@@ -214,16 +213,108 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
                             
                             <input type="submit" value="Actualizar"/>
                             <input type="hidden" name="agregar-usuario" value="<?= $resultado['id']; ?>"/>
+                            
+                            <img class="loading" style="display: none;" src="inc/img/loading.gif" width="30" height="30"/>
                         </form> <!-- /agregar-usuario-<?= $resultado['id']; ?> -->
                         
-                        <button class="eliminar-usuario">Eliminar usuario</button>
+                        <button class="eliminar-usuario" data-id="<?= $resultado['id']; ?>">Eliminar usuario</button>
+                        <img class="loading loading-eliminar-usuario" id="loading-eliminar-usuario-<?= $resultado['id']; ?>" style="display: none;" src="inc/img/loading.gif" width="30" height="30"/>
                         
                         <?php
 					} // foreach($resultados as $resultado) {
 				} // if( $tabla == 'usuarios' ) {
 				
+				
+				
+				if( $tabla == 'grupos' ) {
+					// Consulta a join de tabla de tipo de usuario y usuario
+					$tiposUsuarios = $bd->query("SELECT a.id, a.nombre
+												FROM usuarios a, tipo_usuario b
+												WHERE a.id = b.id_usuario AND b.id_tipo = 2");
+					
+					// Consulta a join de tabla de materia
+					$materias = $bd->query("SELECT * FROM materia");
+					
+					// Consulta a join de tabla de periodos
+					$periodos = $bd->query("SELECT * FROM periodos");
+					
+					
+					foreach( $resultados as $resultado ) {
+						
+						// Formulario para editar grupos ?>
+						
+                        <form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" class="agregar-grupo" id="agregar-grupo-<?= $resultado['id']; ?>">
+                            <h2>Grupo <?= $resultado['id']; ?></h2>
+                            <?php
+                            
+                            if( $tiposUsuarios == false ) {
+                                echo 'Hubo un error con la base de datos:' . $bd->error();
+                            } else {
+                                $output = '<select name="profesor">';
+                                $output .= '<option value="0">Elegir profesor</option>';
+                                
+                                foreach( $tiposUsuarios as $tipoUsuarios ) {
+									$selected = ( $resultado['id_profesor'] == $tipoUsuarios['id'] ) ? 'selected' : '';
+                                    $output .= '<option value="' . $tipoUsuarios['id'] . '" ' . $selected . '>' . $tipoUsuarios['nombre'] . '</option>';
+                                } // foreach( $tiposUsuarios as $tipoUsuarios ) {
+                                
+                                $output .= '</select> <!-- /profesor -->';
+                                $output .= '<h6 class="error-profesor"></h6>';
+                                echo $output;
+                            } // if($tiposUsuarios == false) { ... else ...
+                            
+                            
+                            if( $materias == false ) {
+                                echo 'Hubo un error con la base de datos:' . $bd->error();
+                            } else {
+                                $output = '<select name="materia">';
+                                $output .= '<option value="0">Elegir materia</option>';
+                                
+                                foreach( $materias as $materia ) {
+									$selected = ( $resultado['id_materia'] == $materia['id'] ) ? 'selected' : '';
+                                    $output .= '<option name="materia" value="' . $materia['id'] . '" ' . $selected . '>' . $materia['nombre'] . '</option>';
+                                } // foreach( $tiposUsuarios as $tipoUsuarios ) {
+                                
+                                $output .= '</select> <!-- /materia -->';
+                                $output .= '<h6 class="error-materia"></h6>';
+                                echo $output;
+                            } // if($tiposUsuarios == false) { ... else ...
+                            
+                            
+                            if( $periodos == false ) {
+                                echo 'Hubo un error con la base de datos:' . $bd->error();
+                            } else {
+                                $output = '<select name="periodo">';
+                                $output .= '<option value="0">Elegir periodo</option>';
+                                
+                                foreach( $periodos as $periodo ) {
+									$selected = ( $resultado['id_periodo'] == $periodo['id'] ) ? 'selected' : '';
+                                    $output .= '<option value="' . $periodo['id'] . '" ' . $selected . '>' . $periodo['nombre'] . ' – ' . $periodo['descripcion'] . '</option>';
+                                } // foreach( $tiposUsuarios as $tipoUsuarios ) {
+                                
+                                $output .= '</select> <!-- /periodo -->';
+                                $output .= '<h6 class="error-periodo"></h6>';
+                                echo $output;
+                            } // if($tiposUsuarios == false) { ... else ...
+                            ?>
+                            
+                            <input type="number" name="numero" value="<?= $resultado['numero']; ?>" placeholder="Número" />
+                            <h6 class="error-numero"></h6>
+                            
+                            <input type="submit" value="Actualizar"/>
+                            <input type="hidden" name="agregar-grupo" value="1"/>
+                            
+                            
+                        </form> <!-- /agregar-grupo-<?= $resultado['id']; ?> -->
+                    	<?php
+                    } // foreach( $resultados as $resultado ) {
+				} // if( $tabla == 'grupos' ) {
+				
 			} // if( $resultados->num_rows > 0 ) {
 		} // if( $resultados == false ) { ... else ...
+		
+		
+    	include_once( 'inc/shadowbox.php' );
 		
 		echo '<script type="text/javascript" src="' . BASEDIR . '/inc/js/jquery-1.11.3.min.js"></script>';
 		
