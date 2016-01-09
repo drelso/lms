@@ -201,16 +201,19 @@ $('.eliminar-usuario').click(function(e) {
 }); // $('.eliminar-usuario').click(function(e) {
 
 var error = false;
-var agregarGrupo = $('#agregar-grupo');
+var agregarGrupo = null;
 
-$('#agregar-grupo input[type="submit"]').click(function(e) {
+$('.agregar-grupo').submit(function(e) {
     "use strict";
+	
+	agregarGrupo = $(this);
 	
 	e.preventDefault();
 	
-	var $this = $('#agregar-grupo');
+	var $this = $(this);
 	var error = false;
 	
+	var id			=	$this.find('input[name="agregar-grupo"]').val();
 	var profesor		=	$this.find('select[name="profesor"]').val();
 	var materia		=	$this.find('select[name="materia"]').val();
 	var periodo		=	$this.find('select[name="periodo"]').val();
@@ -247,6 +250,9 @@ $('#agregar-grupo input[type="submit"]').click(function(e) {
 		$this.find('.error-periodo').html('');
 	} // if( profesor == null ) { ... else ...
 	
+	agregarGrupo.find('.error-numero').html('');
+	agregarGrupo.find('.error-clave').html('');
+	
 	//if( error ) { e.preventDefault(); }
 	if( !error ) {
 		$.post( "inc/func/existe-grupo.php",
@@ -279,12 +285,43 @@ $('#agregar-grupo input[type="submit"]').click(function(e) {
 			
 			//if( error ) { e.preventDefault(); }
 			
-			if( !error ) { agregarGrupo.submit(); }
+			if( !error ) {
+				
+				$this.find('.loading').fadeIn( 300 );
+		
+				$.post( "inc/admin-func/actualizar-edicion.func.php",
+					{
+						modo:		'grupo',
+						id:			id,
+						profesor:	profesor,
+						materia:	materia,
+						periodo:	periodo,
+						numero:		numero
+					})
+				.done(function( datos ) {
+					
+					console.log(id + ' ' + datos);
+					
+					var resultado = datos;
+					var mensajeError = '';
+					
+					$this.find('.loading').fadeOut( 300 );
+					
+				})
+				.fail( function(xhr, textStatus, errorThrown ) {
+					mensajeError = xhr.responseText;
+					agregarMateria.find('.error-clave').html(mensajeError);
+					
+					$this.find('.loading').fadeOut( 300 );
+				});
+				
+				//agregarGrupo.submit();
+			} // 
 			
 		})
 		.fail( function(xhr, textStatus, errorThrown ) {
 			mensajeError = xhr.responseText;
-			agregarMateria.find('.error-clave').html(mensajeError);
+			agregarGrupo.find('.error-clave').html(mensajeError);
 		});
 	} // if( !error ) {
 	

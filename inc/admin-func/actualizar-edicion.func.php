@@ -113,7 +113,7 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setContrasena( $_POST['contrasena'] );
 				
-				echo 'Cambió contraseña<br>';
+				echo 'Cambió contraseña';
 				
 			} // if( !empty( $_POST['contrasena'] ) && ...
 			
@@ -144,7 +144,8 @@ if( isset( $_POST['modo'] ) &&
 					
 					$usuario->setTipo( $_POST['tipo'] );
 					
-					echo 'Los tipos cambiaron<br>';
+					echo '
+					Los tipos cambiaron';
 				} // if( $idTipos == $_POST['tipo'] ) {
 				
 			} // if( !empty( $_POST['tipo'] ) ) {
@@ -174,13 +175,15 @@ if( isset( $_POST['modo'] ) &&
 				
 				$usuario->setDepartamentos( $_POST['departamento'] );
 				
-				echo 'Los departamentos cambiaron';
+				echo '
+				Los departamentos cambiaron';
 			} // if( $idDeptos == $_POST['departamento'] ) {
 			
 		} // if( isset( $_POST['departamento'] ) {
 		
 		
 	} // if( $_POST['modo'] == 'usuario' ) {
+	
 	
 	if( $_POST['modo'] == 'eliminar-usuario' ) {
 		
@@ -202,6 +205,74 @@ if( isset( $_POST['modo'] ) &&
 				
 				echo 'A punto de eliminar al usuario ' . $id;
 				$administrador->eliminarUsuario( $id );
+				
+			} // if( isset( $administrador ) && !empty( $administrador ) ) {
+			
+		} // if( isset( $_SESSION['usuario_registrado'] ) ) {
+	} // if( $_POST['modo'] == 'eliminar-usuario' ) {
+	
+	
+	if( $_POST['modo'] == 'grupo' ) {
+		
+		if( isset( $_SESSION['usuario_registrado'] ) ) {
+			$idAdmin = intval( $_SESSION['usuario_registrado'] );
+			
+			echo 'Existe la variable de sesión';
+			
+			if( $idAdmin > 0 ) {
+				require_once('../clases/administrador.class.php');
+				$administrador = new Administrador( $idAdmin );
+			} // if($id > 0) {
+			
+			if( isset( $administrador ) && !empty( $administrador ) ) {
+				
+				$id = intval( $_POST['id'] );
+				
+				require_once('../clases/grupo.class.php');
+				$grupo = new Grupo( $id );
+				
+				if( !empty( $_POST['profesor'] ) &&
+					$_POST['profesor'] !== $grupo->getIdProfesor() ) {
+					
+					$grupo->setIdProfesor( intval( $_POST['profesor'] ) );
+					
+					echo '
+					Cambió profesor';
+					
+				} // if( !empty( $_POST['profesor'] ) && ...
+				
+				if( !empty( $_POST['materia'] ) &&
+					$_POST['materia'] !== $grupo->getIdMateria() ) {
+					
+					$grupo->setIdMateria( intval( $_POST['materia'] ) );
+					
+					echo '
+					Cambió materia';
+					
+				} // if( !empty( $_POST['materia'] ) && ...
+				
+				if( !empty( $_POST['periodo'] ) &&
+					$_POST['periodo'] !== $grupo->getPeriodo() ) {
+					
+					$grupo->setPeriodo( $_POST['periodo'] );
+					
+					echo '
+					Cambió periodo';
+					
+				} // if( !empty( $_POST['periodo'] ) && ...
+				
+				if( !empty( $_POST['numero'] ) &&
+					$_POST['numero'] !== $grupo->getNumero() ) {
+					
+					$grupo->setNumero( intval( $_POST['numero'] ) );
+					
+					echo '
+					Cambió número';
+					
+				} // if( !empty( $_POST['numero'] ) && ...
+				
+				echo '
+				Edición del grupo ' . $id;
 				
 			} // if( isset( $administrador ) && !empty( $administrador ) ) {
 			

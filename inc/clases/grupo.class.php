@@ -12,7 +12,7 @@ class Grupo {
 	private $bd;
 	
 	function __construct($id) {
-		require_once('inc/db/bd.class.php');
+		require_once( __DIR__ . '/../db/bd.class.php' );
 		$this->bd = new BD();
 		
 		$this->id = intval($id);
@@ -155,9 +155,9 @@ class Grupo {
 	
 	
 	public function setPeriodo($idPeriodo) {
-		$this->bd->query('UPDATE grupos SET id_profesor = ' . $this->bd->escapar($idProfesor) . ' WHERE id = ' . $this->id);
-		$this->idProfesor = $idProfesor;
-	} // public function setIdMateria($idMateria) {
+		$this->bd->query('UPDATE grupos SET id_periodo = ' . $this->bd->escapar($idPeriodo) . ' WHERE id = ' . $this->id);
+		$this->idProfesor = $idPeriodo;
+	} // public function setPeriodo($idPeriodo) {
 	
 } // class Grupo {
 

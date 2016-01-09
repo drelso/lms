@@ -302,13 +302,34 @@ if( isset( $administrador ) && !empty( $administrador ) ) {
                             <h6 class="error-numero"></h6>
                             
                             <input type="submit" value="Actualizar"/>
-                            <input type="hidden" name="agregar-grupo" value="1"/>
-                            
+                            <input type="hidden" name="agregar-grupo" value="<?= $resultado['id']; ?>"/>
+                            <img class="loading" style="display: none;" src="inc/img/loading.gif" width="30" height="30"/>
                             
                         </form> <!-- /agregar-grupo-<?= $resultado['id']; ?> -->
                     	<?php
                     } // foreach( $resultados as $resultado ) {
 				} // if( $tabla == 'grupos' ) {
+				
+				
+				if( $tabla == 'periodos' ) {
+					foreach( $resultados as $resultado ) {
+						
+						// Formulario para editar periodos ?>
+						<form action="<?= BASEDIR; ?>/controlador-bd.php" method="post" id="agregar-periodo-<?= $resultado['id']; ?>">
+							<h2>Periodo <?= $resultado['id']; ?></h2>
+							
+							<input type="text" name="nombre" placeholder="Nombre" value="<?= $resultado['nombre']; ?>" maxlength="255"/>
+							<h6 class="error-nombre"></h6>
+							<input type="text" name="descripcion" placeholder="Descripción" value="<?= $resultado['descripcion']; ?>" maxlength="255"/>
+							<h6 class="error-descripcion"></h6>
+							
+							<input type="submit" value="Agregar"/>
+							<input type="hidden" name="agregar-periodo" value="<?= $resultado['id']; ?>"/>
+						</form> <!-- /agregar-grupo-<?= $resultado['id']; ?> -->
+                    <?php
+                    } // foreach( $resultados as $resultado ) {
+				} // if( $tabla == 'periodos' ) {
+				
 				
 			} // if( $resultados->num_rows > 0 ) {
 		} // if( $resultados == false ) { ... else ...

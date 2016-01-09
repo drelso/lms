@@ -8,7 +8,7 @@ class Periodo {
 	private $bd;
 	
 	function __construct($id) {
-		require_once('inc/db/bd.class.php');
+		require_once( __DIR__ . '/../db/bd.class.php' );
 		$this->bd = new BD();
 		
 		$this->id = intval($id);
